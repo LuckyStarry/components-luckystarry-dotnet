@@ -5,12 +5,12 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
-    <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.1</Version>
+    <Description>LuckyStarry 程序体系基础服务</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.50.4" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.1" />
+    <PackageReference Include="LuckyStarry.Models" Version="1.0.2" />
   </ItemGroup>
 
 </Project>
