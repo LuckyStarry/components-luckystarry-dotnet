@@ -2,17 +2,18 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace LuckyStarry.Data
 {
     public class DbClient : IDbClient
     {
-        private IServiceProvider services { get; }
+        private readonly IDbConnectionFactory factory;
+
         public string DbName { get; }
 
-        public DbClient(IServiceCollection services, string dbName)
+        public DbClient(IDbConnectionFactory factory, string dbName)
         {
+            this.factory = factory;
             this.DbName = dbName;
         }
 
@@ -26,6 +27,7 @@ namespace LuckyStarry.Data
 
         public virtual IDbConnection CreateConnection()
         {
+            return this.factory.Create(this.DbName);
         }
         public virtual T Execute<T>(Func<IDbConnection, T> func)
         {
