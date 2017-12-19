@@ -9,6 +9,8 @@ namespace LuckyStarry.Data
     public interface IDbClient
     {
         string DbName { get; }
+        ICommandBuilder CreateCommand(CommandType commandType);
+
         IDbConnection CreateConnection();
         T Execute<T>(Func<IDbConnection, T> func);
         int ExecuteNonQuery(string sqlText, object param = null);

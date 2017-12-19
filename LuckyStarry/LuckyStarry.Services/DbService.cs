@@ -12,15 +12,13 @@ namespace LuckyStarry.Services
        where TEntity : Models.IEntity
     {
         private readonly ISqlTextDecorator decorator;
-        private readonly IDbClientFactory factory;
+        private readonly IDbClient client;
 
-        public DbService(ISqlTextDecorator decorator, IDbClientFactory factory)
+        public DbService(ISqlTextDecorator decorator, IDbClient client)
         {
             this.decorator = decorator;
-            this.factory = factory;
+            this.client = client;
         }
-
-        public abstract string DatabaseName { get; }
 
         public virtual string[] Columns { get; } = typeof(TEntity).GetProperties().Select(p => p.Name).ToArray();
 
@@ -33,7 +31,7 @@ SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))
   FROM { this.decorator.TableName(this.TableName) }
 ", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAll) }");
 
-            return this.factory.Create(this.DatabaseName).Query<TEntity>(sqlText);
+            return this.client.Query<TEntity>(sqlText);
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
@@ -43,7 +41,7 @@ SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))
   FROM { this.decorator.TableName(this.TableName) }
 ", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAllAsync) }");
 
-            var client = await this.factory.CreateAsync(this.DatabaseName);
+            var client = await this.client.CreateAsync();
             return await client.QueryAsync<TEntity>(sqlText);
         }
     }
@@ -70,7 +68,7 @@ SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))
  WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
 
-            return this.factory.Create(this.DatabaseName).QueryFirstOrDefault<TEntity>(sqlText, new { id });
+            return this.factory.Create().QueryFirstOrDefault<TEntity>(sqlText, new { id });
         }
 
         public virtual async Task<TEntity> GetByIdAsync(TPrimary id)
@@ -81,7 +79,7 @@ SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))
  WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetByIdAsync) }");
 
-            var client = await this.factory.CreateAsync(this.DatabaseName);
+            var client = await this.factory.CreateAsync();
             return await client.QueryFirstOrDefaultAsync<TEntity>(sqlText, new { id });
         }
 
@@ -93,7 +91,7 @@ INSERT INTO  { this.decorator.TableName(this.TableName) }
      VALUES ({ string.Join(",", this.Columns.Select(c => this.decorator.ParameterName(c))) })
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(Insert) }");
 
-            var count = this.factory.Create(this.DatabaseName).ExecuteNonQuery(sqlText, model);
+            var count = this.factory.Create().ExecuteNonQuery(sqlText, model);
             return count > 0 ? model.ID : throw new InsertFailedException(sqlText);
         }
 
@@ -105,7 +103,7 @@ INSERT INTO  { this.decorator.TableName(this.TableName) }
      VALUES ({ string.Join(",", this.Columns.Select(c => this.decorator.ParameterName(c))) })
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(InsertAsync) }");
 
-            var client = await this.factory.CreateAsync(this.DatabaseName);
+            var client = await this.factory.CreateAsync();
             var count = await client.ExecuteNonQueryAsync(sqlText, model);
             return count > 0 ? model.ID : throw new InsertFailedException(sqlText);
         }
@@ -127,7 +125,7 @@ DELETE { this.decorator.TableName(this.TableName) }
  WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
 
-            return this.factory.Create(this.DatabaseName).ExecuteNonQuery(sqlText, new { id }) > 0;
+            return this.factory.Create().ExecuteNonQuery(sqlText, new { id }) > 0;
         }
 
         public virtual async Task<bool> PhysicalDeleteAsync(TPrimary id)
@@ -137,7 +135,7 @@ DELETE { this.decorator.TableName(this.TableName) }
  WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
 
-            var client = await this.factory.CreateAsync(this.DatabaseName);
+            var client = await this.factory.CreateAsync();
             var count = await client.ExecuteNonQueryAsync(sqlText, new { id });
             return count > 0;
         }
@@ -181,7 +179,7 @@ UPDATE { this.decorator.TableName(this.TableName) }
  WHERE { string.Join(",", conditions.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_CONDITION }{ c }") }")) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(Update) }");
 
-            return this.factory.Create(this.DatabaseName).ExecuteNonQuery(sqlText, parameters);
+            return this.factory.Create().ExecuteNonQuery(sqlText, parameters);
         }
 
         protected virtual async Task<int> UpdateAsync(object condition, object entity)
@@ -213,7 +211,7 @@ UPDATE { this.decorator.TableName(this.TableName) }
  WHERE { string.Join(",", conditions.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_CONDITION }{ c }") }")) }
 ", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(UpdateAsync) }");
 
-            var client = await this.factory.CreateAsync(this.DatabaseName);
+            var client = await this.factory.CreateAsync();
             return await client.ExecuteNonQueryAsync(sqlText, parameters);
         }
     }
