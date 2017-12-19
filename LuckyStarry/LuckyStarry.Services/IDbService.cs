@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LuckyStarry.Services
 {
@@ -12,6 +13,8 @@ namespace LuckyStarry.Services
         string DatabaseName { get; }
         string TableName { get; }
         IEnumerable<TEntity> GetAll();
+
+        Task<IEnumerable<TEntity>> GetAllAsync();
     }
 
     public interface IDbService<TEntity, TPrimary> : IDbService<TEntity>
@@ -23,5 +26,11 @@ namespace LuckyStarry.Services
         bool LogicalDelete(TPrimary id);
         bool PhysicalDelete(TPrimary id);
         bool Update(TEntity model);
+
+        Task<TEntity> GetByIdAsync(TPrimary id);
+        Task<TPrimary> InsertAsync(TEntity model);
+        Task<bool> LogicalDeleteAsync(TPrimary id);
+        Task<bool> PhysicalDeleteAsync(TPrimary id);
+        Task<bool> UpdateAsync(TEntity model);
     }
 }
