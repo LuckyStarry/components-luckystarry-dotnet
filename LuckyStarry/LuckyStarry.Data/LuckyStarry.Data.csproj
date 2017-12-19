@@ -6,8 +6,8 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.2</Version>
-    <PackageReleaseNotes>==========1.0.2==========
+    <Version>1.0.2.1</Version>
+    <PackageReleaseNotes>==========1.0.2.1==========
 [^] 增加异步方法的支持</PackageReleaseNotes>
   </PropertyGroup>
 
