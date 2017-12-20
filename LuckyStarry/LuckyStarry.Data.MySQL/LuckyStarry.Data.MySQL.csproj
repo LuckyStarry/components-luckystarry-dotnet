@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LuckyStarry.Data\LuckyStarry.Data.csproj" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.3.4-alpha" />
   </ItemGroup>
 
 </Project>

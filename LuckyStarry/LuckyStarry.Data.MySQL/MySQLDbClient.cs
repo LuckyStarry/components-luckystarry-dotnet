@@ -14,12 +14,12 @@ namespace LuckyStarry.Data.MySQL
             this.connectionString = connectionString;
         }
 
-        public override ICommandBuilder CreateCommand(CommandType commandType)
+        public override IDbConnection CreateConnection()
         {
             throw new NotImplementedException();
         }
 
-        public override IDbConnection CreateConnection()
+        public override ICommandFactory GetCommandFactory()
         {
             throw new NotImplementedException();
         }

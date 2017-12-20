@@ -11,77 +11,45 @@ namespace LuckyStarry.Services
     public abstract class DbService<TEntity> : Service, IDbService<TEntity>
        where TEntity : Models.IEntity
     {
-        private readonly ISqlTextDecorator decorator;
         private readonly IDbClient client;
-
-        public DbService(ISqlTextDecorator decorator, IDbClient client)
-        {
-            this.decorator = decorator;
-            this.client = client;
-        }
+        public DbService(IDbClient client) => this.client = client;
 
         public virtual string[] Columns { get; } = typeof(TEntity).GetProperties().Select(p => p.Name).ToArray();
 
         public virtual string TableName { get; } = typeof(TEntity).Name;
 
-        public virtual IEnumerable<TEntity> GetAll()
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
-", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAll) }");
+        private string GetAllSqlText() => this.client
+                .GetCommandFactory()
+                .CreateSelectBuilder()
+                .Columns(this.Columns)
+                .From(this.TableName)
+                .Build();
 
-            return this.client.Query<TEntity>(sqlText);
-        }
-
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
-", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAllAsync) }");
-
-            var client = await this.client.CreateAsync();
-            return await client.QueryAsync<TEntity>(sqlText);
-        }
+        public virtual IEnumerable<TEntity> GetAll() => this.client.Query<TEntity>(this.GetAllSqlText());
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync() => await this.client.QueryAsync<TEntity>(this.GetAllSqlText());
     }
 
     public abstract class DbService<TEntity, TPrimary> : DbService<TEntity>, IDbService<TEntity, TPrimary>
        where TEntity : Models.IEntity<TPrimary>
     {
-        private readonly ISqlTextDecorator decorator;
-        private readonly IDbClientFactory factory;
-
-        public DbService(ISqlTextDecorator decorator, IDbClientFactory factory) : base(decorator, factory)
-        {
-            this.decorator = decorator;
-            this.factory = factory;
-        }
+        private readonly IDbClient client;
+        public DbService(IDbClient client) : base(client) => this.client = client;
 
         public virtual string PrimaryKey { get; } = nameof(Models.IEntity<TPrimary>.ID);
 
-        public virtual TEntity GetById(TPrimary id)
+        private string GetByIdSqlText(string idKey)
         {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
-
-            return this.factory.Create().QueryFirstOrDefault<TEntity>(sqlText, new { id });
+            var factory = this.client.GetCommandFactory();
+            return factory
+                .CreateSelectBuilder()
+                .Columns(this.Columns)
+                .From(this.TableName)
+                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, idKey))
+                .Build();
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(TPrimary id)
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetByIdAsync) }");
-
-            var client = await this.factory.CreateAsync();
-            return await client.QueryFirstOrDefaultAsync<TEntity>(sqlText, new { id });
-        }
+        public virtual TEntity GetById(TPrimary id) => this.client.QueryFirstOrDefault<TEntity>(this.GetByIdSqlText(nameof(id)), new { id });
+        public virtual async Task<TEntity> GetByIdAsync(TPrimary id) => await this.client.QueryFirstOrDefaultAsync<TEntity>(this.GetByIdSqlText(nameof(id)), new { id });
 
         public virtual TPrimary Insert(TEntity model)
         {

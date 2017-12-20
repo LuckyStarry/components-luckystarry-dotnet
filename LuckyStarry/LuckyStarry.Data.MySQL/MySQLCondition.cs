@@ -36,7 +36,6 @@ namespace LuckyStarry.Data.MySQL
         public static MySQLCondition GT(string column, string parameter) => BinaryCondition<Conditions.Operations.GreaterThan>(column, parameter);
         public static MySQLCondition GTE(string column, string parameter) => BinaryCondition<Conditions.Operations.GreaterThanOrEqual>(column, parameter);
 
-
         private static MySQLCondition BinaryCondition<T>(string column, string parameter) where T : Conditions.Operations.BinaryOperation, new()
         {
             return new T().Create($"`{ column }`", $"@{ parameter }");

@@ -29,5 +29,7 @@ namespace LuckyStarry.Data.MySQL
                 ? $"`{ this.table }`"
                 : $"`{ this.table }` AS `{ this.alias }`";
         }
+
+        public string Build() => this.Compile();
     }
 }
