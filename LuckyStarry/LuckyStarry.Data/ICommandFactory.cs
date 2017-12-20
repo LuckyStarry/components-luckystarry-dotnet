@@ -10,5 +10,7 @@ namespace LuckyStarry.Data
         IInsertBuilder CreateInsertBuilder();
         IUpdateBuilder CreateUpdateBuilder();
         IDeleteBuilder CreateDeleteBuilder();
+
+        ISqlConditionFactory GetConditionFactory();
     }
 }
