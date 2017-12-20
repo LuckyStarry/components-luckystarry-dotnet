@@ -4,11 +4,7 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public enum CommandType
+    public interface IInsertBuilder
     {
-        Select,
-        Insert,
-        Update,
-        Delete
     }
 }

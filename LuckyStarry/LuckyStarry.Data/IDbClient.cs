@@ -8,7 +8,7 @@ namespace LuckyStarry.Data
 {
     public interface IDbClient
     {
-        ICommandBuilder CreateCommand(CommandType commandType);
+        ICommandFactory GetCommandFactory();
 
         IDbConnection CreateConnection();
         T Execute<T>(Func<IDbConnection, T> func);
