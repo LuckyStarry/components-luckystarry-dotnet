@@ -8,5 +8,6 @@ namespace LuckyStarry.Data
     {
         ISelectBuilder Column(string column);
         ISelectBuilder ColumnAs(string column, string alias);
+        ISelectBuilder Columns(IEnumerable<string> columns);
     }
 }
