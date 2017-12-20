@@ -8,13 +8,6 @@ namespace LuckyStarry.Data
 {
     public abstract class DbClient : IDbClient
     {
-        public string DbName { get; }
-
-        public DbClient(string dbName)
-        {
-            this.DbName = dbName;
-        }
-
         public abstract ICommandBuilder CreateCommand(CommandType commandType);
 
         public static T Execute<T>(IDbConnection connection, Func<IDbConnection, T> func)

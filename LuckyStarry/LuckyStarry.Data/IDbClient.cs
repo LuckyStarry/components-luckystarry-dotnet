@@ -8,7 +8,6 @@ namespace LuckyStarry.Data
 {
     public interface IDbClient
     {
-        string DbName { get; }
         ICommandBuilder CreateCommand(CommandType commandType);
 
         IDbConnection CreateConnection();
