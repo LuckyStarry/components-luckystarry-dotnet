@@ -10,7 +10,6 @@ namespace LuckyStarry.Services
         where TEntity : IEntity
     {
         string[] Columns { get; }
-        string DatabaseName { get; }
         string TableName { get; }
         IEnumerable<TEntity> GetAll();
 

@@ -6,10 +6,14 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.2.1</Version>
+    <Version>1.0.3-alpha</Version>
     <PackageReleaseNotes>==========1.0.2.1==========
 [^] 增加异步方法的支持</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ISqlConditionBuilder.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.4" />

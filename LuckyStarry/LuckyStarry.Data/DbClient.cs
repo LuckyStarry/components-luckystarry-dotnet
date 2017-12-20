@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace LuckyStarry.Data
 {
-    public class DbClient : IDbClient
+    public abstract class DbClient : IDbClient
     {
-        private readonly IDbConnectionFactory factory;
-
-        public string DbName { get; }
-
-        public DbClient(IDbConnectionFactory factory, string dbName)
-        {
-            this.factory = factory;
-            this.DbName = dbName;
-        }
+        public abstract ICommandBuilder CreateCommand(CommandType commandType);
 
         public static T Execute<T>(IDbConnection connection, Func<IDbConnection, T> func)
         {
@@ -35,7 +27,7 @@ namespace LuckyStarry.Data
         }
         public virtual async Task<T> ExecuteAsync<T>(Func<IDbConnection, Task<T>> func) => await DbClient.ExecuteAsync<T>(await this.CreateConnectionAsync(), func);
 
-        public virtual IDbConnection CreateConnection() => this.factory.Create(this.DbName);
+        public abstract IDbConnection CreateConnection();
         public virtual async Task<IDbConnection> CreateConnectionAsync() => await Task.FromResult(this.CreateConnection());
 
         public virtual IEnumerable<T> Query<T>(string sqlText, object param = null) => this.Execute(connection => connection.Query<T>(sqlText, param));
