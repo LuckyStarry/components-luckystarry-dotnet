@@ -6,7 +6,7 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.3.4-alpha</Version>
+    <Version>1.0.3.5-alpha</Version>
     <PackageReleaseNotes>==========1.0.3==========
 [^] 增加命令生成工具
 ==========1.0.2==========
@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ICommandBuilder.cs" />
     <Compile Remove="ISqlConditionBuilder.cs" />
     <Compile Remove="ISqlTextBuilder.cs" />
   </ItemGroup>

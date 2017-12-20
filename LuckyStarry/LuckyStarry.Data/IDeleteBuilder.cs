@@ -4,7 +4,8 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IDeleteBuilder : ICommandBuilder
+    public interface IDeleteBuilder
     {
+        IFromBuilder From(string table);
     }
 }

@@ -6,5 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IInsertBuilder
     {
+        IIntoBuilder Into(string column);
+        IIntoBuilder Into(IEnumerable<string> columns);
     }
 }
