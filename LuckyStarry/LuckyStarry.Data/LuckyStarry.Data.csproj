@@ -6,8 +6,8 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.3.9-alpha</Version>
-    <PackageReleaseNotes>==========1.0.3==========
+    <Version>1.0.4.0-alpha</Version>
+    <PackageReleaseNotes>==========1.0.4==========
 [^] 增加命令生成工具
 ==========1.0.2==========
 [^] 增加异步方法的支持</PackageReleaseNotes>
