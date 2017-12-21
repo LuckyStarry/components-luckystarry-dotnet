@@ -6,10 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IIntoBuilder
     {
-        IIntoBuilder Column(string column);
-        IIntoBuilder Columns(IEnumerable<string> columns);
-
-        IValuesBuilder Values(string paramters);
-        IValuesBuilder Values(IEnumerable<string> paramters);
+        IIntoColumnsBuilder Column(string column);
+        IIntoColumnsBuilder Columns(IEnumerable<string> columns);
     }
 }
