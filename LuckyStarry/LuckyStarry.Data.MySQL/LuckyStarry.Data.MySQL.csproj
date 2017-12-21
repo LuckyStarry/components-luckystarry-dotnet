@@ -5,6 +5,7 @@
     <Version>1.0.1-alpha</Version>
     <PackageReleaseNotes>==========1.0.1==========
 [+] 增加生成器代码</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
