@@ -5,20 +5,20 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL
 {
-    public abstract class MySQLCondition : ISqlCondition
+    public abstract class MySQLCondition : ICondition
     {
         private Conditions.ComposeCondition next;
 
-        ISqlCondition ISqlCondition.And(ISqlCondition condition) => this.And(condition);
-        ISqlCondition ISqlCondition.Or(ISqlCondition condition) => this.Or(condition);
+        ICondition ICondition.And(ICondition condition) => this.And(condition);
+        ICondition ICondition.Or(ICondition condition) => this.Or(condition);
 
-        public virtual MySQLCondition And(ISqlCondition condition)
+        public virtual MySQLCondition And(ICondition condition)
         {
             this.next = new Conditions.AndCondition(condition);
             return this.next;
         }
 
-        public virtual MySQLCondition Or(ISqlCondition condition)
+        public virtual MySQLCondition Or(ICondition condition)
         {
             this.next = new Conditions.OrCondition(condition);
             return this;

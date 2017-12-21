@@ -6,7 +6,7 @@ namespace LuckyStarry.Data.MySQL.Conditions
 {
     class AndCondition : ComposeCondition
     {
-        public AndCondition(ISqlCondition condition) : base(condition)
+        public AndCondition(ICondition condition) : base(condition)
         {
         }
 

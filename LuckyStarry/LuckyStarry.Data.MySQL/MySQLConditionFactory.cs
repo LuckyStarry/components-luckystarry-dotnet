@@ -4,14 +4,14 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL
 {
-    public class MySQLConditionFactory : ISqlConditionFactory
+    public class MySQLConditionFactory : IConditionFactory
     {
-        ISqlCondition ISqlConditionFactory.EqualTo(string column, string parameter) => this.EqualTo(column, parameter);
-        ISqlCondition ISqlConditionFactory.GreaterThan(string column, string parameter) => this.GreaterThan(column, parameter);
-        ISqlCondition ISqlConditionFactory.GreaterThanOrEqualTo(string column, string parameter) => this.GreaterThanOrEqualTo(column, parameter);
-        ISqlCondition ISqlConditionFactory.LessThan(string column, string parameter) => this.LessThan(column, parameter);
-        ISqlCondition ISqlConditionFactory.LessThanOrEqualTo(string column, string parameter) => this.LessThanOrEqualTo(column, parameter);
-        ISqlCondition ISqlConditionFactory.NotEqualTo(string column, string parameter) => this.NotEqualTo(column, parameter);
+        ICondition IConditionFactory.EqualTo(string column, string parameter) => this.EqualTo(column, parameter);
+        ICondition IConditionFactory.GreaterThan(string column, string parameter) => this.GreaterThan(column, parameter);
+        ICondition IConditionFactory.GreaterThanOrEqualTo(string column, string parameter) => this.GreaterThanOrEqualTo(column, parameter);
+        ICondition IConditionFactory.LessThan(string column, string parameter) => this.LessThan(column, parameter);
+        ICondition IConditionFactory.LessThanOrEqualTo(string column, string parameter) => this.LessThanOrEqualTo(column, parameter);
+        ICondition IConditionFactory.NotEqualTo(string column, string parameter) => this.NotEqualTo(column, parameter);
 
         public virtual MySQLCondition EqualTo(string column, string parameter) => MySQLCondition.EQ(column, parameter);
         public virtual MySQLCondition GreaterThan(string column, string parameter) => MySQLCondition.GT(column, parameter);

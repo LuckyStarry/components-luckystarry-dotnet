@@ -6,6 +6,7 @@ namespace LuckyStarry.Data.MySQL
 {
     public abstract class MySQLBuilder
     {
+        public MySQLBuilder() : this(null) { }
         public MySQLBuilder(MySQLBuilder previous)
         {
             this.Previous = previous;

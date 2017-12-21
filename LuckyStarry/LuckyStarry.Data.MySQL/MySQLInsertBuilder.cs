@@ -4,11 +4,13 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL
 {
-    public class MySQLInsertBuilder : MySQLCommandBuilder, IInsertBuilder
+    public class MySQLInsertBuilder : MySQLBuilder, IInsertBuilder
     {
-        protected internal override string CompilePart()
+        protected internal override string CompilePart() => $@"INSERT ";
+
+        IIntoBuilder IInsertBuilder.Into(string table)
         {
-            return $@"INSERT ";
+            throw new NotImplementedException();
         }
     }
 }

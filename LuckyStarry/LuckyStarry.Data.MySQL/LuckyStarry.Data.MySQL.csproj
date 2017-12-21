@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.1-alpha</Version>
+    <PackageReleaseNotes>==========1.0.1==========
+[+] 增加生成器代码</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LuckyStarry.Data" Version="1.0.3.4-alpha" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.4.2-alpha" />
   </ItemGroup>
 
 </Project>

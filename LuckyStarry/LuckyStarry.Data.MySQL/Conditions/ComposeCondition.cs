@@ -6,9 +6,9 @@ namespace LuckyStarry.Data.MySQL.Conditions
 {
     abstract class ComposeCondition : MySQLCondition
     {
-        private readonly ISqlCondition condition;
+        private readonly ICondition condition;
 
-        public ComposeCondition(ISqlCondition condition)
+        public ComposeCondition(ICondition condition)
         {
             this.condition = condition;
         }
