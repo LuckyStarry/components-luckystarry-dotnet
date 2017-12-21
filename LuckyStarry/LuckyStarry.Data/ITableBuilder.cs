@@ -4,10 +4,8 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IUpdateTableBuilder
+    public interface ITableBuilder : ICompleteBuilder
     {
-        IUpdateTableBuilder Set(string column, string paramter);
-
         IWhereBuilder Where(ISqlCondition condition);
     }
 }

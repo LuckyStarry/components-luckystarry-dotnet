@@ -4,8 +4,7 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IDeleteBuilder
+    public interface IWhereBuilderExtensible : IWhereBuilder, IOrderBuildable
     {
-        ITableBuilder From(string table);
     }
 }

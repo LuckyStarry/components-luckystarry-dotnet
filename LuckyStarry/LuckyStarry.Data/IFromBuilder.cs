@@ -4,8 +4,8 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IFromBuilder : ICompleteBuilder
+    public interface IFromBuilder : ITableBuilder
     {
-        IWhereBuilder Where(ISqlCondition condition);
+        new IWhereBuilderExtensible Where(ISqlCondition condition);
     }
 }
