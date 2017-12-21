@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IGroupBuilder
+    public interface IGroupBuilder : ICompleteBuilder
     {
         IHavingBuilder Have(string column, string value);
     }
