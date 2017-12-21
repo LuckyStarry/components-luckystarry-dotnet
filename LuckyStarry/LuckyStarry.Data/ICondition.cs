@@ -4,10 +4,10 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface ISqlCondition
+    public interface ICondition
     {
-        ISqlCondition And(ISqlCondition condition);
-        ISqlCondition Or(ISqlCondition condition);
+        ICondition And(ICondition condition);
+        ICondition Or(ICondition condition);
 
         string Build();
     }

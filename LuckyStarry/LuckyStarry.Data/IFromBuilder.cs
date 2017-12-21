@@ -6,6 +6,6 @@ namespace LuckyStarry.Data
 {
     public interface IFromBuilder : ITableBuilder
     {
-        new IWhereBuilderExtensible Where(ISqlCondition condition);
+        new IWhereBuilderExtensible Where(ICondition condition);
     }
 }

@@ -6,6 +6,6 @@ namespace LuckyStarry.Data
 {
     public interface ITableBuilderUpdatable : ITableBuilder
     {
-        ITableBuilder Set(string column, string paramter);
+        ITableBuilderUpdatable Set(string column, string paramter);
     }
 }

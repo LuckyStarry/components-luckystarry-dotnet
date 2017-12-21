@@ -11,6 +11,7 @@ namespace LuckyStarry.Data
         IUpdateBuilder CreateUpdateBuilder();
         IDeleteBuilder CreateDeleteBuilder();
 
-        ISqlConditionFactory GetConditionFactory();
+        IConditionFactory GetConditionFactory();
+        IDbObjectFactory GetDbObjectFactory();
     }
 }
