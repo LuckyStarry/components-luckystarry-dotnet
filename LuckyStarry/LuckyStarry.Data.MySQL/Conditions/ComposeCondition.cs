@@ -4,12 +4,14 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL.Conditions
 {
-    abstract class ComposeCondition : MySQLCondition
+    public abstract class ComposeCondition : MySQLCondition
     {
         private readonly ICondition condition;
+        private readonly ICondition previous;
 
-        public ComposeCondition(ICondition condition)
+        protected internal ComposeCondition(ICondition previous, ICondition condition)
         {
+            this.previous = previous;
             this.condition = condition;
         }
 
@@ -17,7 +19,7 @@ namespace LuckyStarry.Data.MySQL.Conditions
 
         public override string Build()
         {
-            return $"{ this.ComposeType } ({ this.condition.Build() })";
+            return $"({ this.previous.Build() }) { this.ComposeType } ({ this.condition.Build() })";
         }
     }
 }

@@ -11,6 +11,7 @@ namespace LuckyStarry.Data.MySQL
         protected internal MySQLTableBuilder(MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(select) => this.table = table;
         protected internal MySQLTableBuilder(MySQLUpdateBuilder update, Data.Objects.IDbTable table) : base(update) => this.table = table;
         protected internal MySQLTableBuilder(MySQLDeleteBuilder delete, Data.Objects.IDbTable table) : base(delete) => this.table = table;
+        internal MySQLTableBuilder(MySQLTableUpdateCommandBuilder setted) : base(setted) { }
 
         protected internal override string CompilePart() => this.table.SqlText;
 

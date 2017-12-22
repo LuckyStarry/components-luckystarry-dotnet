@@ -4,12 +4,18 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL.Conditions
 {
-    class NotCondition : ComposeCondition
+    public class NotCondition : MySQLCondition
     {
-        public NotCondition(ICondition condition) : base(condition)
+        private readonly ICondition condition;
+
+        protected internal NotCondition(ICondition condition)
         {
+            this.condition = condition;
         }
 
-        public override string ComposeType => "NOT";
+        public override string Build()
+        {
+            return $"NOT ({ this.condition.Build() })";
+        }
     }
 }

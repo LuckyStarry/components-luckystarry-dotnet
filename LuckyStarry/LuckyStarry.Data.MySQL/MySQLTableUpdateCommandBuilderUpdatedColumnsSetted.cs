@@ -6,13 +6,11 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLTableUpdateCommandBuilderUpdatedColumnsSetted : MySQLTableUpdateCommandBuilder
     {
-        private readonly MySQLTableUpdateCommandBuilder table;
         private readonly Data.Objects.IDbColumn column;
         private readonly Data.Objects.IDbParameter parameter;
 
         protected internal MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(MySQLTableUpdateCommandBuilder table, Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) : base(table)
         {
-            this.table = table;
             this.column = column;
             this.parameter = parameter;
         }
@@ -21,7 +19,8 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string Compile()
         {
-            return $"{ this.table.Compile() } { (this.table is MySQLTableUpdateCommandBuilderUpdatedColumnsSetted ? "SET" : ",") } { this.CompilePart() }";
+            var connect = this.Previous is MySQLTableUpdateCommandBuilderUpdatedColumnsSetted ? ", " : " SET ";
+            return $"{ this.Previous.Compile() }{ connect }{ this.CompilePart() }";
         }
     }
 }

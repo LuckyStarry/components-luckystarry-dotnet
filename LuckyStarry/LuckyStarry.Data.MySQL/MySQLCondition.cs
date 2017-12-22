@@ -9,9 +9,11 @@ namespace LuckyStarry.Data.MySQL
     {
         ICondition ICondition.And(ICondition condition) => this.And(condition);
         ICondition ICondition.Or(ICondition condition) => this.Or(condition);
+        ICondition ICondition.Not() => this.Not();
 
-        public virtual MySQLCondition And(ICondition condition) => new Conditions.AndCondition(condition);
-        public virtual MySQLCondition Or(ICondition condition) => new Conditions.OrCondition(condition);
+        public virtual Conditions.AndCondition And(ICondition condition) => new Conditions.AndCondition(this, condition);
+        public virtual Conditions.OrCondition Or(ICondition condition) => new Conditions.OrCondition(this, condition);
+        public virtual Conditions.NotCondition Not() => new Conditions.NotCondition(this);
 
         public static MySQLCondition EQ(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => BinaryCondition<Conditions.Operations.Equal>(column, parameter);
         public static MySQLCondition NE(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => BinaryCondition<Conditions.Operations.NotEqual>(column, parameter);
@@ -19,10 +21,17 @@ namespace LuckyStarry.Data.MySQL
         public static MySQLCondition LTE(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => BinaryCondition<Conditions.Operations.LessThanOrEqual>(column, parameter);
         public static MySQLCondition GT(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => BinaryCondition<Conditions.Operations.GreaterThan>(column, parameter);
         public static MySQLCondition GTE(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => BinaryCondition<Conditions.Operations.GreaterThanOrEqual>(column, parameter);
+        public static MySQLCondition NULL(Data.Objects.IDbColumn column) => UnaryCondition<Conditions.Operations.IsNull>(column);
+        public static MySQLCondition NOTNULL(Data.Objects.IDbColumn column) => UnaryCondition<Conditions.Operations.NotIsNull>(column);
 
         private static MySQLCondition BinaryCondition<T>(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) where T : Conditions.Operations.BinaryOperation, new()
         {
             return new T().Create(column.SqlText, parameter.SqlText);
+        }
+
+        private static MySQLCondition UnaryCondition<T>(Data.Objects.IDbColumn column) where T : Conditions.Operations.UnaryOperation, new()
+        {
+            return new T().Create(column.SqlText);
         }
 
         public abstract string Build();

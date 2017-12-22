@@ -12,6 +12,8 @@ namespace LuckyStarry.Data.MySQL
         ICondition IConditionFactory.LessThan(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => this.LessThan(column, parameter);
         ICondition IConditionFactory.LessThanOrEqualTo(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => this.LessThanOrEqualTo(column, parameter);
         ICondition IConditionFactory.NotEqualTo(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => this.NotEqualTo(column, parameter);
+        ICondition IConditionFactory.IsNull(Data.Objects.IDbColumn column) => this.IsNull(column);
+        ICondition IConditionFactory.NotIsNull(Data.Objects.IDbColumn column) => this.NotIsNull(column);
 
         public virtual MySQLCondition EqualTo(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => MySQLCondition.EQ(column, parameter);
         public virtual MySQLCondition GreaterThan(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => MySQLCondition.GT(column, parameter);
@@ -19,5 +21,7 @@ namespace LuckyStarry.Data.MySQL
         public virtual MySQLCondition LessThan(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => MySQLCondition.LT(column, parameter);
         public virtual MySQLCondition LessThanOrEqualTo(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => MySQLCondition.LTE(column, parameter);
         public virtual MySQLCondition NotEqualTo(Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) => MySQLCondition.NE(column, parameter);
+        public virtual MySQLCondition IsNull(Data.Objects.IDbColumn column) => MySQLCondition.NULL(column);
+        public virtual MySQLCondition NotIsNull(Data.Objects.IDbColumn column) => MySQLCondition.NOTNULL(column);
     }
 }

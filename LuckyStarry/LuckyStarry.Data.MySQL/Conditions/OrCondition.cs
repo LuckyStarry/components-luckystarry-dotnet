@@ -4,9 +4,9 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL.Conditions
 {
-    class OrCondition : ComposeCondition
+    public class OrCondition : ComposeCondition
     {
-        public OrCondition(ICondition condition) : base(condition)
+        protected internal OrCondition(ICondition previous, ICondition condition) : base(previous, condition)
         {
         }
 
