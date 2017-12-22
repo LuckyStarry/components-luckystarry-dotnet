@@ -10,6 +10,12 @@ namespace LuckyStarry.Data.MySQL.Objects
         {
         }
 
+        public MySQLTable(string name, string alias) : base(name, alias)
+        {
+        }
+
         public override string SqlText => $"`{ this.Name }`";
+
+        public override string SqlTextAlias => $"`{ this.Alias }`";
     }
 }

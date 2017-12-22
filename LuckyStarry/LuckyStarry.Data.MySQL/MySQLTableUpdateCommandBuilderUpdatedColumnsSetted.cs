@@ -7,17 +7,17 @@ namespace LuckyStarry.Data.MySQL
     public class MySQLTableUpdateCommandBuilderUpdatedColumnsSetted : MySQLTableUpdateCommandBuilder
     {
         private readonly MySQLTableUpdateCommandBuilder table;
-        private readonly string column;
-        private readonly string paramter;
+        private readonly Data.Objects.IDbColumn column;
+        private readonly Data.Objects.IDbParameter parameter;
 
-        public MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(MySQLTableUpdateCommandBuilder table, string column, string paramter) : base(table)
+        protected internal MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(MySQLTableUpdateCommandBuilder table, Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) : base(table)
         {
             this.table = table;
             this.column = column;
-            this.paramter = paramter;
+            this.parameter = parameter;
         }
 
-        protected internal override string CompilePart() => $"`{ this.column }` = @{ this.paramter }";
+        protected internal override string CompilePart() => $"{ this.column.SqlText } = { this.parameter.SqlText }";
 
         protected internal override string Compile()
         {

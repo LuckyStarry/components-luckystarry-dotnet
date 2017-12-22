@@ -6,11 +6,10 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLInsertBuilder : MySQLBuilder, IInsertBuilder
     {
-        protected internal override string CompilePart() => $@"INSERT ";
+        protected internal MySQLInsertBuilder() { }
+        protected internal override string CompilePart() => $@"INSERT";
 
-        IIntoBuilder IInsertBuilder.Into(string table)
-        {
-            throw new NotImplementedException();
-        }
+        IIntoBuilder IInsertBuilder.Into(Data.Objects.IDbTable table) => this.Into(table);
+        public virtual MySQLIntoBuilder Into(Data.Objects.IDbTable table) => new MySQLIntoBuilder(this, table);
     }
 }

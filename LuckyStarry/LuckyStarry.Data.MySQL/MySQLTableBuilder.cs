@@ -6,16 +6,15 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLTableBuilder : MySQLBuilder, ITableBuilder
     {
-        private readonly string table;
+        private readonly Data.Objects.IDbTable table;
 
-        public MySQLTableBuilder(MySQLSelectBuilder select, string table) : base(select) => this.table = table;
-        public MySQLTableBuilder(MySQLUpdateBuilder update, string table) : base(update) => this.table = table;
-        public MySQLTableBuilder(MySQLDeleteBuilder delete, string table) : base(delete) => this.table = table;
+        protected internal MySQLTableBuilder(MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(select) => this.table = table;
+        protected internal MySQLTableBuilder(MySQLUpdateBuilder update, Data.Objects.IDbTable table) : base(update) => this.table = table;
+        protected internal MySQLTableBuilder(MySQLDeleteBuilder delete, Data.Objects.IDbTable table) : base(delete) => this.table = table;
 
-        protected internal override string CompilePart()
-        {
-            return $"`{ this.table }`";
-        }
+        protected internal override string CompilePart() => this.table.SqlText;
+
+        protected internal override string Compile() => $"{ this.Previous.Compile() } { this.CompilePart() }";
 
         public virtual string Build() => this.Compile();
 

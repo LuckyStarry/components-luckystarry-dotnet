@@ -14,5 +14,8 @@ namespace LuckyStarry.Data.MySQL
         public virtual Objects.MySQLColumn CreateColumn(string name) => new Objects.MySQLColumn(name);
         public virtual Objects.MySQLParameter CreateParameter(string name) => new Objects.MySQLParameter(name);
         public virtual Objects.MySQLTable CreateTable(string name) => new Objects.MySQLTable(name);
+
+        public virtual Objects.MySQLColumn CreateColumn(string name, string alias) => new Objects.MySQLColumn(name, alias);
+        public virtual Objects.MySQLTable CreateTable(string name, string alias) => new Objects.MySQLTable(name, alias);
     }
 }

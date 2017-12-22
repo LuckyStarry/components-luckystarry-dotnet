@@ -7,32 +7,32 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLIntoColumnsBuilder : MySQLBuilder, IIntoColumnsBuilder
     {
-        private readonly string column;
+        private readonly Data.Objects.IDbColumn column;
 
-        public MySQLIntoColumnsBuilder(MySQLIntoBuilder table, string column) : base(table) => this.column = column;
-        public MySQLIntoColumnsBuilder(MySQLIntoColumnsBuilder previous, string column) : base(previous) => this.column = column;
+        protected internal MySQLIntoColumnsBuilder(MySQLIntoBuilder table, Data.Objects.IDbColumn column) : base(table) => this.column = column;
+        protected internal MySQLIntoColumnsBuilder(MySQLIntoColumnsBuilder previous, Data.Objects.IDbColumn column) : base(previous) => this.column = column;
 
-        protected internal override string CompilePart() => $"`{ this.column }`";
+        protected internal override string CompilePart() => this.column.SqlText;
 
         protected internal override string Compile()
         {
-            return $"{ this.Previous.Compile() } { (this.Previous is IIntoColumnsBuilder ? "," : "(") } { this.CompilePart() }";
+            return $"{ this.Previous.Compile() } { (this.Previous is MySQLIntoColumnsBuilder ? "," : "(") } { this.CompilePart() }";
         }
 
-        IIntoValuesBuilder IIntoColumnsBuilder.Value(string parameter) => this.Value(parameter);
-        IIntoValuesBuilder IIntoColumnsBuilder.Values(IEnumerable<string> parameters) => this.Values(parameters);
-        IIntoColumnsBuilder IIntoBuilder.Column(string column) => this.Column(column);
-        IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<string> columns) => this.Columns(columns);
+        IIntoValuesBuilder IIntoColumnsBuilder.Value(Data.Objects.IDbParameter parameter) => this.Value(parameter);
+        IIntoValuesBuilder IIntoColumnsBuilder.Values(IEnumerable<Data.Objects.IDbParameter> parameters) => this.Values(parameters);
+        IIntoColumnsBuilder IIntoBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
+        IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLIntoColumnsBuilder Column(string column) => new MySQLIntoColumnsBuilder(this, column);
-        public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<string> columns)
+        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this, column);
+        public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
             var c = this.Column(columns.First());
             var less = columns.Skip(1);
             return less != null && less.Any() ? c : c.Columns(less);
         }
-        public virtual MySQLIntoValuesBuilder Value(string parameter) => new MySQLIntoValuesBuilder(this, column);
-        public virtual MySQLIntoValuesBuilder Values(IEnumerable<string> parameters)
+        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this, parameter);
+        public virtual MySQLIntoValuesBuilder Values(IEnumerable<Data.Objects.IDbParameter> parameters)
         {
             var values = this.Value(parameters.First());
             var less = parameters.Skip(1);

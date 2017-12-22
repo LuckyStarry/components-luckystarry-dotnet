@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LuckyStarry.Data" Version="1.0.5-alpha" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.5.1-alpha" />
     <PackageReference Include="LuckyStarry.Models" Version="1.0.2" />
   </ItemGroup>
 

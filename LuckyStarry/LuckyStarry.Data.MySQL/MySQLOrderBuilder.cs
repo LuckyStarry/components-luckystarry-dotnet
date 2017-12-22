@@ -6,18 +6,18 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLOrderBuilder : MySQLBuilder, IOrderBuilder
     {
-        private readonly string column;
+        private readonly Data.Objects.IDbColumn column;
         private readonly OrderType order;
 
-        public MySQLOrderBuilder(MySQLWhereBuilder where, string column) : this(where, column, OrderType.ASC) { }
-        public MySQLOrderBuilder(MySQLWhereBuilder where, string column, OrderType order) : base(where)
+        protected internal MySQLOrderBuilder(MySQLWhereBuilder where, Data.Objects.IDbColumn column) : this(where, column, OrderType.ASC) { }
+        protected internal MySQLOrderBuilder(MySQLWhereBuilder where, Data.Objects.IDbColumn column, OrderType order) : base(where)
         {
             this.column = column;
             this.order = order;
         }
 
-        public MySQLOrderBuilder(MySQLOrderBuilder orderby, string column) : this(orderby, column, OrderType.ASC) { }
-        public MySQLOrderBuilder(MySQLOrderBuilder orderby, string column, OrderType order) : base(orderby)
+        protected internal MySQLOrderBuilder(MySQLOrderBuilder orderby, Data.Objects.IDbColumn column) : this(orderby, column, OrderType.ASC) { }
+        protected internal MySQLOrderBuilder(MySQLOrderBuilder orderby, Data.Objects.IDbColumn column, OrderType order) : base(orderby)
         {
             this.column = column;
             this.order = order;
@@ -25,23 +25,20 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string CompilePart()
         {
-            return this.Previous is IOrderBuilder
-                ? $"{ this.Previous.Compile() }, `{ this.column }` { this.order }"
-                : $"ORDER BY `{ this.column }` { this.order }";
+            return $"{ this.column.SqlText } { this.order }";
         }
 
-        IOrderBuilder IOrderBuilder.ThenBy(string column) => this.ThenBy(column);
-        IOrderBuilder IOrderBuilder.ThenByDescending(string column) => this.ThenByDescending(column);
-
-        public MySQLOrderBuilder ThenBy(string column)
+        protected internal override string Compile()
         {
-            return new MySQLOrderBuilder(this, column);
+            var connect = this.Previous is IOrderBuilder ? "," : "ORDER BY";
+            return $"{ this.Previous.Compile() } { connect } { this.CompilePart() }";
         }
 
-        public MySQLOrderBuilder ThenByDescending(string column)
-        {
-            return new MySQLOrderBuilder(this, column, OrderType.DESC);
-        }
+        IOrderBuilder IOrderBuilder.ThenBy(Data.Objects.IDbColumn column) => this.ThenBy(column);
+        IOrderBuilder IOrderBuilder.ThenByDescending(Data.Objects.IDbColumn column) => this.ThenByDescending(column);
+
+        public MySQLOrderBuilder ThenBy(Data.Objects.IDbColumn column) => new MySQLOrderBuilder(this, column);
+        public MySQLOrderBuilder ThenByDescending(Data.Objects.IDbColumn column) => new MySQLOrderBuilder(this, column, OrderType.DESC);
 
         public virtual string Build() => this.Compile();
 

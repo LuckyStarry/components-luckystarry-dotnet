@@ -8,24 +8,23 @@ namespace LuckyStarry.Data.MySQL
     public class MySQLIntoBuilder : MySQLBuilder, IIntoBuilder
     {
         private readonly MySQLInsertBuilder insert;
-        private readonly string table;
-        private readonly MySQLIntoBuilder setted;
+        private readonly Data.Objects.IDbTable table;
 
-        public MySQLIntoBuilder(MySQLInsertBuilder insert, string table) : base(insert)
+        protected internal MySQLIntoBuilder(MySQLInsertBuilder insert, Data.Objects.IDbTable table) : base(insert)
         {
             this.insert = insert;
             this.table = table;
         }
 
-        public MySQLIntoBuilder(MySQLIntoBuilder setted) : this(setted.insert, setted.table) => this.setted = setted;
+        protected MySQLIntoBuilder(MySQLIntoBuilder setted) : base(setted) { }
 
-        protected internal override string CompilePart() => $"`{ this.table }`";
+        protected internal override string CompilePart() => this.table.SqlText;
 
-        IIntoColumnsBuilder IIntoBuilder.Column(string column) => this.Column(column);
-        IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<string> columns) => this.Columns(columns);
+        IIntoColumnsBuilder IIntoBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
+        IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLIntoColumnsBuilder Column(string column) => new MySQLIntoColumnsBuilder(this, column);
-        public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<string> columns)
+        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this, column);
+        public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
             var setted = this.Column(columns.First());
             var less = columns.Skip(1);

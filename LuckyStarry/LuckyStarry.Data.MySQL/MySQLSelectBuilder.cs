@@ -7,37 +7,23 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLSelectBuilder : MySQLBuilder, ISelectBuilder
     {
-        IFromBuilder ISelectBuilder.From(string table) => this.From(table);
-        IFromBuilder ISelectBuilder.FromAs(string table, string alias) => this.FromAs(table, alias);
+        protected internal MySQLSelectBuilder() { }
+        protected internal MySQLSelectBuilder(MySQLSelectBuilder selected) : base(selected) { }
 
-        ISelectBuilder ISelectBuilder.Column(string column) => this.Column(column);
-        ISelectBuilder ISelectBuilder.ColumnAs(string column, string alias) => this.ColumnAs(column, alias);
-        ISelectBuilder ISelectBuilder.Columns(IEnumerable<string> columns) => this.Columns(columns);
+        IFromBuilder ISelectBuilder.From(Data.Objects.IDbTable table) => this.From(table);
+        ISelectBuilderColumnsSelected ISelectBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
+        ISelectBuilderColumnsSelected ISelectBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLFromBuilder From(string table) => new MySQLFromBuilder(this, table);
-        public virtual MySQLFromBuilder FromAs(string table, string alias) => new MySQLFromBuilder(this, table, alias);
-
-        private Dictionary<string, string> columns { get; } = new Dictionary<string, string>();
-
-        public virtual MySQLSelectBuilder Column(string column) => this.ColumnAs(column, column);
-        public virtual MySQLSelectBuilder ColumnAs(string column, string alias)
+        public virtual MySQLFromBuilder From(Data.Objects.IDbTable table) => new MySQLFromBuilder(this, table);
+        public virtual MySQLSelectBuilderColumnsSelected Column(Data.Objects.IDbColumn column) => new MySQLSelectBuilderColumnsSelected(this, column);
+        public virtual MySQLSelectBuilderColumnsSelected Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
-            this.columns[alias] = column;
-            return this;
+            var column = this.Column(columns.First());
+            var less = columns.Skip(1);
+            return less != null && less.Any() ? column : column.Columns(less);
         }
 
-        public virtual MySQLSelectBuilder Columns(IEnumerable<string> columns)
-        {
-            foreach (var column in columns)
-            {
-                this.Column(column);
-            }
-            return this;
-        }
-
-        protected internal override string CompilePart()
-        {
-            return $@"SELECT { string.Join(",", this.columns.Select(kv => $"`{ kv.Value }` AS `{ kv.Key }`")) }";
-        }
+        protected internal override string CompilePart() => "SELECT";
+        protected internal override string Compile() => this.CompilePart();
     }
 }

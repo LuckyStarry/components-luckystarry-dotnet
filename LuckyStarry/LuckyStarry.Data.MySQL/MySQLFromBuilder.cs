@@ -6,15 +6,9 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLFromBuilder : MySQLTableBuilder, IFromBuilder
     {
-        private readonly string table;
-        private readonly string alias;
+        private readonly Data.Objects.IDbTable table;
 
-        public MySQLFromBuilder(MySQLSelectBuilder select, string table) : this(select, table, string.Empty) { }
-        public MySQLFromBuilder(MySQLSelectBuilder select, string table, string alias) : base(select, table)
-        {
-            this.table = table;
-            this.alias = alias;
-        }
+        protected internal MySQLFromBuilder(MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(select, table) => this.table = table;
 
         IWhereBuilder ITableBuilder.Where(ICondition condition) => this.Where(condition);
         IWhereBuilderExtensible IFromBuilder.Where(ICondition condition) => this.Where(condition);
@@ -23,9 +17,21 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string CompilePart()
         {
-            return string.IsNullOrWhiteSpace(this.alias)
-                ? $"FROM `{ this.table }`"
-                : $"FROM `{ this.table }` AS `{ this.alias }`";
+            return string.IsNullOrWhiteSpace(this.table.Alias)
+                ? $"{ this.table.SqlText }"
+                : $"{ this.table.SqlText } AS { this.table.SqlTextAlias }";
+        }
+
+        protected internal override string Compile()
+        {
+            if (this.Previous is ISelectBuilderColumnsSelected)
+            {
+                return $"{ this.Previous.Compile() } FROM { this.CompilePart() }";
+            }
+            else
+            {
+                return $"{ this.Previous.Compile() } * FROM { this.CompilePart() }";
+            }
         }
 
         public override string Build() => this.Compile();

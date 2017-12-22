@@ -17,9 +17,6 @@ namespace LuckyStarry.Data.MySQL.Conditions
             this.operation = operation;
         }
 
-        public override string Build()
-        {
-            return $"{ this.operation.Compile(left, right) } { base.Build() }";
-        }
+        public override string Build() => this.operation.Compile(left, right);
     }
 }

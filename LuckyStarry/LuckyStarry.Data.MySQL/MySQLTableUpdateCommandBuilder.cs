@@ -8,19 +8,19 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly MySQLTableUpdateCommandBuilder setted;
         private readonly MySQLUpdateBuilder update;
-        private readonly string table;
+        private readonly Data.Objects.IDbTable table;
 
-        public MySQLTableUpdateCommandBuilder(MySQLUpdateBuilder update, string table) : base(update, table)
+        protected internal MySQLTableUpdateCommandBuilder(MySQLUpdateBuilder update, Data.Objects.IDbTable table) : base(update, table)
         {
             this.update = update;
             this.table = table;
         }
 
-        internal MySQLTableUpdateCommandBuilder(MySQLTableUpdateCommandBuilder setted) : this(setted.update, setted.table) => this.setted = setted;
+        protected internal MySQLTableUpdateCommandBuilder(MySQLTableUpdateCommandBuilder setted) : this(setted.update, setted.table) => this.setted = setted;
 
-        ITableBuilderUpdatable ITableBuilderUpdatable.Set(string column, string paramter) => this.Set(column, paramter);
+        ITableBuilderUpdatable ITableBuilderUpdatable.Set(Data.Objects.IDbColumn column, Data.Objects.IDbParameter paramter) => this.Set(column, paramter);
 
-        public virtual MySQLTableUpdateCommandBuilderUpdatedColumnsSetted Set(string column, string paramter) => new MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(this, column, paramter);
+        public virtual MySQLTableUpdateCommandBuilderUpdatedColumnsSetted Set(Data.Objects.IDbColumn column, Data.Objects.IDbParameter paramter) => new MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(this, column, paramter);
 
         public override string Build()
         {
