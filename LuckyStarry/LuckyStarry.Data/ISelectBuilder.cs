@@ -6,8 +6,8 @@ namespace LuckyStarry.Data
 {
     public interface ISelectBuilder
     {
-        ISelectBuilder Column(Objects.IDbColumn column);
-        ISelectBuilder Columns(IEnumerable<Objects.IDbColumn> columns);
+        ISelectBuilderColumnsSelected Column(Objects.IDbColumn column);
+        ISelectBuilderColumnsSelected Columns(IEnumerable<Objects.IDbColumn> columns);
 
         IFromBuilder From(Objects.IDbTable table);
     }
