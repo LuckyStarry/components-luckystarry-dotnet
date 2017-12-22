@@ -12,5 +12,8 @@ namespace LuckyStarry.Data
         ICondition LessThanOrEqualTo(Objects.IDbColumn column, Objects.IDbParameter parameter);
         ICondition GreaterThan(Objects.IDbColumn column, Objects.IDbParameter parameter);
         ICondition GreaterThanOrEqualTo(Objects.IDbColumn column, Objects.IDbParameter parameter);
+
+        ICondition IsNull(Objects.IDbColumn column);
+        ICondition NotIsNull(Objects.IDbColumn column);
     }
 }

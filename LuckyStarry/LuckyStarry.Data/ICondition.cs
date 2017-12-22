@@ -8,6 +8,7 @@ namespace LuckyStarry.Data
     {
         ICondition And(ICondition condition);
         ICondition Or(ICondition condition);
+        ICondition Not();
 
         string Build();
     }
