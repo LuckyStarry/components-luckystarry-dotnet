@@ -6,46 +6,21 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLWhereBuilder : MySQLBuilder, IWhereBuilder
     {
-        private ISqlCondition condition;
+        private ICondition condition;
 
-        public MySQLWhereBuilder(MySQLTableBuilder table, ISqlCondition condition) : base(table)
-        {
-            this.condition = condition;
-        }
+        protected internal MySQLWhereBuilder(MySQLTableBuilder table, ICondition condition) : base(table) => this.condition = condition;
+        protected internal MySQLWhereBuilder(MySQLWhereBuilder where, ICondition condition) : base(where) => this.condition = condition;
 
         public string Build() => this.Compile();
 
-        IOrderBuilder IOrderBuildable.Order(string column) => this.Order(column);
-        IOrderBuilder IOrderBuildable.OrderByDescending(string column) => this.OrderByDescending(column);
+        IWhereBuilder IWhereBuilder.And(ICondition condition) => this.And(condition);
+        IWhereBuilder IWhereBuilder.Or(ICondition condition) => this.Or(condition);
 
-        IWhereBuilder IWhereBuilder.And(ISqlCondition condition) => this.And(condition);
-        IWhereBuilder IWhereBuilder.Or(ISqlCondition condition) => this.Or(condition);
+        protected internal override string CompilePart() => this.condition.Build();
 
-        protected internal override string CompilePart()
-        {
-            return $"WHERE { this.condition.Build() }";
-        }
+        protected internal override string Compile() => $"{ this.Previous.Compile() } WHERE { this.CompilePart() }";
 
-        public virtual MySQLOrderBuilder Order(string column)
-        {
-            return new MySQLOrderBuilder(this, column);
-        }
-
-        public virtual MySQLOrderBuilder OrderByDescending(string column)
-        {
-            return new MySQLOrderBuilder(this, column, MySQLOrderBuilder.OrderType.DESC);
-        }
-
-        public virtual MySQLWhereBuilder And(ISqlCondition condition)
-        {
-            this.condition = this.condition.And(condition);
-            return this;
-        }
-
-        public virtual MySQLWhereBuilder Or(ISqlCondition condition)
-        {
-            this.condition = this.condition.Or(condition);
-            return this;
-        }
+        public virtual MySQLWhereAndBuilder And(ICondition condition) => new MySQLWhereAndBuilder(this, condition);
+        public virtual MySQLWhereOrBuilder Or(ICondition condition) => new MySQLWhereOrBuilder(this, condition);
     }
 }

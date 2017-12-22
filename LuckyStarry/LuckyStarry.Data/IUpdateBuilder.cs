@@ -4,7 +4,8 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IUpdateBuilder : ICommandBuilder
+    public interface IUpdateBuilder
     {
+        ITableBuilderUpdatable Table(Objects.IDbTable table);
     }
 }

@@ -4,9 +4,11 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface ISelectBuilder : ICommandBuilder
+    public interface ISelectBuilder
     {
-        ISelectBuilder Column(string column);
-        ISelectBuilder ColumnAs(string column, string alias);
+        ISelectBuilderColumnsSelected Column(Objects.IDbColumn column);
+        ISelectBuilderColumnsSelected Columns(IEnumerable<Objects.IDbColumn> columns);
+
+        IFromBuilder From(Objects.IDbTable table);
     }
 }

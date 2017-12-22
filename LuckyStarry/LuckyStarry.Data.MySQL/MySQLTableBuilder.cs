@@ -6,28 +6,20 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLTableBuilder : MySQLBuilder, ITableBuilder
     {
-        private readonly string table;
-        private readonly string alias;
+        private readonly Data.Objects.IDbTable table;
 
-        public MySQLTableBuilder(MySQLCommandBuilder command, string table) : this(command, table, string.Empty) { }
-        public MySQLTableBuilder(MySQLCommandBuilder command, string table, string alias) : base(command)
-        {
-            this.table = table;
-            this.alias = alias;
-        }
+        protected internal MySQLTableBuilder(MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(select) => this.table = table;
+        protected internal MySQLTableBuilder(MySQLUpdateBuilder update, Data.Objects.IDbTable table) : base(update) => this.table = table;
+        protected internal MySQLTableBuilder(MySQLDeleteBuilder delete, Data.Objects.IDbTable table) : base(delete) => this.table = table;
+        internal MySQLTableBuilder(MySQLTableUpdateCommandBuilder setted) : base(setted) { }
 
-        IWhereBuilder ITableBuilder.Where(ISqlCondition condition) => this.Where(condition);
+        protected internal override string CompilePart() => this.table.SqlText;
 
-        public virtual MySQLWhereBuilder Where(ISqlCondition condition)
-        {
-            return new MySQLWhereBuilder(this, condition);
-        }
+        protected internal override string Compile() => $"{ this.Previous.Compile() } { this.CompilePart() }";
 
-        protected internal override string CompilePart()
-        {
-            return string.IsNullOrWhiteSpace(this.alias)
-                ? $"`{ this.table }`"
-                : $"`{ this.table }` AS `{ this.alias }`";
-        }
+        public virtual string Build() => this.Compile();
+
+        IWhereBuilder ITableBuilder.Where(ICondition condition) => this.Where(condition);
+        public virtual MySQLWhereBuilder Where(ICondition condition) => new MySQLWhereBuilder(this, condition);
     }
 }

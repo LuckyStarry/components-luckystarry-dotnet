@@ -11,101 +11,67 @@ namespace LuckyStarry.Services
     public abstract class DbService<TEntity> : Service, IDbService<TEntity>
        where TEntity : Models.IEntity
     {
-        private readonly ISqlTextDecorator decorator;
         private readonly IDbClient client;
+        public DbService(IDbClient client) => this.client = client;
 
-        public DbService(ISqlTextDecorator decorator, IDbClient client)
-        {
-            this.decorator = decorator;
-            this.client = client;
-        }
+        public virtual IEnumerable<Data.Objects.IDbColumn> Columns => DbColumns.GetColumns<TEntity>(this.client.GetCommandFactory().GetDbObjectFactory());
+        public virtual Data.Objects.IDbTable Table => this.client.GetCommandFactory().GetDbObjectFactory().CreateTable(typeof(TEntity).Name);
 
-        public virtual string[] Columns { get; } = typeof(TEntity).GetProperties().Select(p => p.Name).ToArray();
+        private string GetAllSqlText() => this.client
+                .GetCommandFactory()
+                .CreateSelectBuilder()
+                .Columns(this.Columns)
+                .From(this.Table)
+                .Build();
 
-        public virtual string TableName { get; } = typeof(TEntity).Name;
-
-        public virtual IEnumerable<TEntity> GetAll()
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
-", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAll) }");
-
-            return this.client.Query<TEntity>(sqlText);
-        }
-
-        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
-", $"{ nameof(DbService<TEntity>) }.{ nameof(GetAllAsync) }");
-
-            var client = await this.client.CreateAsync();
-            return await client.QueryAsync<TEntity>(sqlText);
-        }
+        public virtual IEnumerable<TEntity> GetAll() => this.client.Query<TEntity>(this.GetAllSqlText());
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync() => await this.client.QueryAsync<TEntity>(this.GetAllSqlText());
     }
 
     public abstract class DbService<TEntity, TPrimary> : DbService<TEntity>, IDbService<TEntity, TPrimary>
        where TEntity : Models.IEntity<TPrimary>
     {
-        private readonly ISqlTextDecorator decorator;
-        private readonly IDbClientFactory factory;
+        private readonly IDbClient client;
+        public DbService(IDbClient client) : base(client) => this.client = client;
 
-        public DbService(ISqlTextDecorator decorator, IDbClientFactory factory) : base(decorator, factory)
+        public virtual Data.Objects.IDbColumn PrimaryKey => this.Columns.First(c => c.Name == nameof(Models.IEntity<TPrimary>.ID));
+
+        private string GetByIdSqlText(string idKey)
         {
-            this.decorator = decorator;
-            this.factory = factory;
+            var factory = this.client.GetCommandFactory();
+            return factory
+                .CreateSelectBuilder()
+                .Columns(this.Columns)
+                .From(this.Table)
+                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, factory.GetDbObjectFactory().CreateParameter(idKey)))
+                .Build();
         }
 
-        public virtual string PrimaryKey { get; } = nameof(Models.IEntity<TPrimary>.ID);
+        public virtual TEntity GetById(TPrimary id) => this.client.QueryFirstOrDefault<TEntity>(this.GetByIdSqlText(nameof(id)), new { id });
+        public virtual async Task<TEntity> GetByIdAsync(TPrimary id) => await this.client.QueryFirstOrDefaultAsync<TEntity>(this.GetByIdSqlText(nameof(id)), new { id });
 
-        public virtual TEntity GetById(TPrimary id)
+        private string GetInsertSqlText()
         {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
-
-            return this.factory.Create().QueryFirstOrDefault<TEntity>(sqlText, new { id });
-        }
-
-        public virtual async Task<TEntity> GetByIdAsync(TPrimary id)
-        {
-            var sqlText = this.decorator.Comment($@"
-SELECT { string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) }
-  FROM { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetByIdAsync) }");
-
-            var client = await this.factory.CreateAsync();
-            return await client.QueryFirstOrDefaultAsync<TEntity>(sqlText, new { id });
+            var factory = this.client.GetCommandFactory();
+            var objects = factory.GetDbObjectFactory();
+            return factory
+                .CreateInsertBuilder()
+                .Into(this.Table)
+                .Columns(this.Columns)
+                .Values(this.Columns.Select(c => objects.CreateParameter(c.Name)))
+                .Build();
         }
 
         public virtual TPrimary Insert(TEntity model)
         {
-            var sqlText = this.decorator.Comment($@"
-INSERT INTO  { this.decorator.TableName(this.TableName) }
-            ({ string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) })
-     VALUES ({ string.Join(",", this.Columns.Select(c => this.decorator.ParameterName(c))) })
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(Insert) }");
-
-            var count = this.factory.Create().ExecuteNonQuery(sqlText, model);
-            return count > 0 ? model.ID : throw new InsertFailedException(sqlText);
+            var sqlText = this.GetInsertSqlText();
+            return this.client.ExecuteNonQuery(sqlText, model) > 0 ? model.ID : throw new InsertFailedException(sqlText);
         }
 
         public virtual async Task<TPrimary> InsertAsync(TEntity model)
         {
-            var sqlText = this.decorator.Comment($@"
-INSERT INTO  { this.decorator.TableName(this.TableName) }
-            ({ string.Join(",", this.Columns.Select(c => this.decorator.ColumnName(c))) })
-     VALUES ({ string.Join(",", this.Columns.Select(c => this.decorator.ParameterName(c))) })
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(InsertAsync) }");
-
-            var client = await this.factory.CreateAsync();
-            var count = await client.ExecuteNonQueryAsync(sqlText, model);
-            return count > 0 ? model.ID : throw new InsertFailedException(sqlText);
+            var sqlText = this.GetInsertSqlText();
+            return await this.client.ExecuteNonQueryAsync(sqlText, model) > 0 ? model.ID : throw new InsertFailedException(sqlText);
         }
 
         public virtual bool LogicalDelete(TPrimary id)
@@ -118,27 +84,18 @@ INSERT INTO  { this.decorator.TableName(this.TableName) }
             return await this.UpdateAsync(new { ID = id }, new { LogicalDelete = 1 }) > 0;
         }
 
-        public virtual bool PhysicalDelete(TPrimary id)
+        private string GetPhysicalDeleteSqlText(string idKey)
         {
-            var sqlText = this.decorator.Comment($@"
-DELETE { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
-
-            return this.factory.Create().ExecuteNonQuery(sqlText, new { id }) > 0;
+            var factory = this.client.GetCommandFactory();
+            return factory
+                .CreateDeleteBuilder()
+                .From(this.Table)
+                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, factory.GetDbObjectFactory().CreateParameter(idKey)))
+                .Build();
         }
 
-        public virtual async Task<bool> PhysicalDeleteAsync(TPrimary id)
-        {
-            var sqlText = this.decorator.Comment($@"
-DELETE { this.decorator.TableName(this.TableName) }
- WHERE { this.decorator.ColumnName(this.PrimaryKey) } = { this.decorator.ParameterName(nameof(id)) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(GetById) }");
-
-            var client = await this.factory.CreateAsync();
-            var count = await client.ExecuteNonQueryAsync(sqlText, new { id });
-            return count > 0;
-        }
+        public virtual bool PhysicalDelete(TPrimary id) => this.client.ExecuteNonQuery(GetPhysicalDeleteSqlText(nameof(id)), new { id }) > 0;
+        public virtual async Task<bool> PhysicalDeleteAsync(TPrimary id) => await client.ExecuteNonQueryAsync(GetPhysicalDeleteSqlText(nameof(id)), new { id }) > 0;
 
         public virtual bool Update(TEntity model)
         {
@@ -150,69 +107,56 @@ DELETE { this.decorator.TableName(this.TableName) }
             return await this.UpdateAsync(new { model.ID }, model) > 0;
         }
 
-        protected virtual int Update(object condition, object entity)
+        private (string, DynamicParameters) GetUpdateSqlText(object conditions, object entity)
         {
-            var conditions = new List<string>();
-            var targets = new List<string>();
+            var factory = this.client.GetCommandFactory();
+            var builder = factory.CreateUpdateBuilder().Table(this.Table);
+
             const string PREFIX_CONDITION = "__where_";
             const string PREFIX_TARGET = "__set_";
 
             var parameters = new DynamicParameters();
-            foreach (var property in condition.GetType().GetProperties().Where(p => p.CanRead))
-            {
-                conditions.Add(property.Name);
-                parameters.Add(this.decorator.ParameterName($"{ PREFIX_CONDITION }{ property.Name }"), property.GetValue(condition));
-            }
             foreach (var property in entity.GetType().GetProperties().Where(p => p.CanRead))
             {
-                if (string.Equals(property.Name, this.PrimaryKey, StringComparison.CurrentCultureIgnoreCase))
+                if (string.Equals(property.Name, this.PrimaryKey.Name, StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
                 }
-                targets.Add(property.Name);
-                parameters.Add(this.decorator.ParameterName($"{ PREFIX_TARGET }{ property.Name }"), property.GetValue(condition));
+                var column = this.Columns.FirstOrDefault(c => string.Equals(c.Name, property.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (column == null)
+                {
+                    continue;
+                }
+                var parameter = factory.GetDbObjectFactory().CreateParameter($"{ PREFIX_CONDITION }{ property.Name }");
+                builder = builder.Set(column, parameter);
+                parameters.Add(parameter.SqlText, property.GetValue(conditions));
             }
+            var where = default(IWhereBuilder);
+            foreach (var property in conditions.GetType().GetProperties().Where(p => p.CanRead))
+            {
+                var column = this.Columns.FirstOrDefault(c => string.Equals(c.Name, property.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (column == null)
+                {
+                    continue;
+                }
+                var parameter = factory.GetDbObjectFactory().CreateParameter($"{ PREFIX_TARGET }{ property.Name }");
+                var condition = factory.GetConditionFactory().EqualTo(column, parameter);
+                where = where?.And(condition) ?? builder.Where(condition);
+                parameters.Add(parameter.SqlText, property.GetValue(entity));
+            }
+            return (where.Build(), parameters);
+        }
 
-            var sqlText = this.decorator.Comment($@"
-UPDATE { this.decorator.TableName(this.TableName) }
-   SET { string.Join(",", targets.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_TARGET }{ c }") }")) }
- WHERE { string.Join(",", conditions.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_CONDITION }{ c }") }")) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(Update) }");
-
-            return this.factory.Create().ExecuteNonQuery(sqlText, parameters);
+        protected virtual int Update(object condition, object entity)
+        {
+            var (sqlText, parameters) = this.GetUpdateSqlText(condition, entity);
+            return this.client.ExecuteNonQuery(sqlText, parameters);
         }
 
         protected virtual async Task<int> UpdateAsync(object condition, object entity)
         {
-            var conditions = new List<string>();
-            var targets = new List<string>();
-            const string PREFIX_CONDITION = "__where_";
-            const string PREFIX_TARGET = "__set_";
-
-            var parameters = new DynamicParameters();
-            foreach (var property in condition.GetType().GetProperties().Where(p => p.CanRead))
-            {
-                conditions.Add(property.Name);
-                parameters.Add(this.decorator.ParameterName($"{ PREFIX_CONDITION }{ property.Name }"), property.GetValue(condition));
-            }
-            foreach (var property in entity.GetType().GetProperties().Where(p => p.CanRead))
-            {
-                if (string.Equals(property.Name, this.PrimaryKey, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    continue;
-                }
-                targets.Add(property.Name);
-                parameters.Add(this.decorator.ParameterName($"{ PREFIX_TARGET }{ property.Name }"), property.GetValue(condition));
-            }
-
-            var sqlText = this.decorator.Comment($@"
-UPDATE { this.decorator.TableName(this.TableName) }
-   SET { string.Join(",", targets.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_TARGET }{ c }") }")) }
- WHERE { string.Join(",", conditions.Select(c => $"{ this.decorator.ColumnName($"{ c }") } = { this.decorator.ParameterName($"{ PREFIX_CONDITION }{ c }") }")) }
-", $"{ nameof(DbService<TEntity, TPrimary>) }.{ nameof(UpdateAsync) }");
-
-            var client = await this.factory.CreateAsync();
-            return await client.ExecuteNonQueryAsync(sqlText, parameters);
+            var (sqlText, parameters) = this.GetUpdateSqlText(condition, entity);
+            return await this.client.ExecuteNonQueryAsync(sqlText, parameters);
         }
     }
 }

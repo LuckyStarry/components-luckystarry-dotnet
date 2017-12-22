@@ -10,5 +10,10 @@ namespace LuckyStarry.Data.MySQL.Conditions.Operations
         {
             return $"{ this.OperatorSymbol } { expression }";
         }
+
+        internal MySQLCondition Create(string expression)
+        {
+            return new UnaryCondition(expression, this);
+        }
     }
 }

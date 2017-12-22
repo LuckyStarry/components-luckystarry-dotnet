@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.1.1</Version>
+    <PackageReleaseNotes>==========1.0.1==========
+[+] 增加生成器代码</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>LuckyStarry 程序体系基础数据库组件，是一个适配MySQL的实现。</Description>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LuckyStarry.Data\LuckyStarry.Data.csproj" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.5.4" />
+    <PackageReference Include="MySql.Data" Version="6.10.5" />
   </ItemGroup>
 
 </Project>

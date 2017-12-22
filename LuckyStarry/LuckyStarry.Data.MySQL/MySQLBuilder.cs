@@ -6,6 +6,7 @@ namespace LuckyStarry.Data.MySQL
 {
     public abstract class MySQLBuilder
     {
+        public MySQLBuilder() : this(null) { }
         public MySQLBuilder(MySQLBuilder previous)
         {
             this.Previous = previous;
@@ -17,7 +18,7 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal virtual string Compile()
         {
-            return $"{ this.Previous?.CompilePart() } { this.CompilePart() }";
+            return $"{ this.Previous?.Compile() } { this.CompilePart() }";
         }
     }
 }

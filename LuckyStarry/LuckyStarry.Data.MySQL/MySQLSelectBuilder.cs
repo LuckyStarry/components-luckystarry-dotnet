@@ -5,29 +5,25 @@ using System.Text;
 
 namespace LuckyStarry.Data.MySQL
 {
-    public class MySQLSelectBuilder : MySQLCommandBuilder, ISelectBuilder
+    public class MySQLSelectBuilder : MySQLBuilder, ISelectBuilder
     {
-        ISelectBuilder ISelectBuilder.Column(string column) => this.Column(column);
-        ISelectBuilder ISelectBuilder.ColumnAs(string column, string alias) => this.ColumnAs(column, alias);
+        protected internal MySQLSelectBuilder() { }
+        protected internal MySQLSelectBuilder(MySQLSelectBuilder selected) : base(selected) { }
 
-        protected Dictionary<string, string> Columns { get; } = new Dictionary<string, string>();
+        IFromBuilder ISelectBuilder.From(Data.Objects.IDbTable table) => this.From(table);
+        ISelectBuilderColumnsSelected ISelectBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
+        ISelectBuilderColumnsSelected ISelectBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLSelectBuilder Column(string column)
+        public virtual MySQLFromBuilder From(Data.Objects.IDbTable table) => new MySQLFromBuilder(this, table);
+        public virtual MySQLSelectBuilderColumnsSelected Column(Data.Objects.IDbColumn column) => new MySQLSelectBuilderColumnsSelected(this, column);
+        public virtual MySQLSelectBuilderColumnsSelected Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
-            return this.ColumnAs(column, column);
+            var column = this.Column(columns.First());
+            var less = columns.Skip(1);
+            return less != null && less.Any() ? column.Columns(less) : column;
         }
 
-        public virtual MySQLSelectBuilder ColumnAs(string column, string alias)
-        {
-            this.Columns[alias] = column;
-            return this;
-        }
-
-        protected internal override string CompilePart()
-        {
-            return $@"
-SELECT { string.Join(",", this.Columns.Select(kv => $"`{ kv.Value }` AS `{ kv.Key }`")) }
-  FROM ";
-        }
+        protected internal override string CompilePart() => "SELECT";
+        protected internal override string Compile() => this.CompilePart();
     }
 }

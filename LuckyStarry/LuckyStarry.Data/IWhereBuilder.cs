@@ -4,9 +4,9 @@ using System.Text;
 
 namespace LuckyStarry.Data
 {
-    public interface IWhereBuilder : ICompleteBuilder, IOrderBuildable
+    public interface IWhereBuilder : ICompleteBuilder
     {
-        IWhereBuilder And(ISqlCondition condition);
-        IWhereBuilder Or(ISqlCondition condition);
+        IWhereBuilder And(ICondition condition);
+        IWhereBuilder Or(ICondition condition);
     }
 }

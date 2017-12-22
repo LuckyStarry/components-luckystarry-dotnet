@@ -1,7 +1,9 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LuckyStarry.Data.MySQL
 {
@@ -14,14 +16,34 @@ namespace LuckyStarry.Data.MySQL
             this.connectionString = connectionString;
         }
 
-        public override ICommandBuilder CreateCommand(CommandType commandType)
-        {
-            throw new NotImplementedException();
-        }
-
         public override IDbConnection CreateConnection()
         {
-            throw new NotImplementedException();
+            return this.CreateMySQLConnection();
+        }
+
+        public override ICommandFactory GetCommandFactory()
+        {
+            return this.GetMySQLCommandFactory();
+        }
+
+        public override async Task<IDbConnection> CreateConnectionAsync()
+        {
+            return await this.CreateMySQLConnectionAsync();
+        }
+
+        public virtual MySqlConnection CreateMySQLConnection()
+        {
+            return new MySqlConnection(this.connectionString);
+        }
+
+        public virtual MySQLCommandFactory GetMySQLCommandFactory()
+        {
+            return new MySQLCommandFactory();
+        }
+
+        public virtual async Task<MySqlConnection> CreateMySQLConnectionAsync()
+        {
+            return await Task.FromResult(this.CreateMySQLConnection());
         }
     }
 }

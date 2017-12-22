@@ -6,7 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IOrderBuildable
     {
-        IOrderBuilder Order(string column);
-        IOrderBuilder OrderByDescending(string column);
+        IOrderBuilder OrderBy(Objects.IDbColumn column);
+        IOrderBuilder OrderByDescending(Objects.IDbColumn column);
     }
 }
