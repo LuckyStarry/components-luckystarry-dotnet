@@ -6,7 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IIntoBuilder
     {
-        IIntoColumnsBuilder Column(string column);
-        IIntoColumnsBuilder Columns(IEnumerable<string> columns);
+        IIntoColumnsBuilder Column(Objects.IDbColumn column);
+        IIntoColumnsBuilder Columns(IEnumerable<Objects.IDbColumn> columns);
     }
 }

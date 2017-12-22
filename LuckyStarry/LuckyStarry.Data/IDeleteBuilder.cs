@@ -6,6 +6,6 @@ namespace LuckyStarry.Data
 {
     public interface IDeleteBuilder
     {
-        ITableBuilder From(string table);
+        ITableBuilder From(Objects.IDbTable table);
     }
 }

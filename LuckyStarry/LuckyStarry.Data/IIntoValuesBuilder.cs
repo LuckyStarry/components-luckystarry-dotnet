@@ -6,7 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IIntoValuesBuilder : ICompleteBuilder
     {
-        IIntoValuesBuilder Value(string parameter);
-        IIntoValuesBuilder Values(IEnumerable<string> parameters);
+        IIntoValuesBuilder Value(Objects.IDbParameter parameter);
+        IIntoValuesBuilder Values(IEnumerable<Objects.IDbParameter> parameters);
     }
 }

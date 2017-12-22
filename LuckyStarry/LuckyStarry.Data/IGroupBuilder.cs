@@ -6,6 +6,6 @@ namespace LuckyStarry.Data
 {
     public interface IGroupBuilder : ICompleteBuilder
     {
-        IHavingBuilder Have(string column, string value);
+        IHavingBuilder Have(Objects.IDbColumn column, string value);
     }
 }

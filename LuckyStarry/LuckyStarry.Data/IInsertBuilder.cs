@@ -6,6 +6,6 @@ namespace LuckyStarry.Data
 {
     public interface IInsertBuilder
     {
-        IIntoBuilder Into(string table);
+        IIntoBuilder Into(Objects.IDbTable table);
     }
 }

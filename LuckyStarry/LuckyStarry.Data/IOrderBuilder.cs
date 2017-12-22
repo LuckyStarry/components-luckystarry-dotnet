@@ -6,7 +6,7 @@ namespace LuckyStarry.Data
 {
     public interface IOrderBuilder : ICompleteBuilder
     {
-        IOrderBuilder ThenBy(string column);
-        IOrderBuilder ThenByDescending(string column);
+        IOrderBuilder ThenBy(Objects.IDbColumn column);
+        IOrderBuilder ThenByDescending(Objects.IDbColumn column);
     }
 }
