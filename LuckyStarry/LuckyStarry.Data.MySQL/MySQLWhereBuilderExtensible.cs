@@ -8,10 +8,10 @@ namespace LuckyStarry.Data.MySQL
     {
         protected internal MySQLWhereBuilderExtensible(MySQLFromBuilder from, ICondition condition) : base(from, condition) { }
 
-        IOrderBuilder IOrderBuildable.Order(Data.Objects.IDbColumn column) => this.Order(column);
+        IOrderBuilder IOrderBuildable.OrderBy(Data.Objects.IDbColumn column) => this.OrderBy(column);
         IOrderBuilder IOrderBuildable.OrderByDescending(Data.Objects.IDbColumn column) => this.OrderByDescending(column);
 
-        public virtual MySQLOrderBuilder Order(Data.Objects.IDbColumn column) => new MySQLOrderBuilder(this, column);
-        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderBuilder(this, column, MySQLOrderBuilder.OrderType.DESC);
+        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this, column);
+        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this, column);
     }
 }

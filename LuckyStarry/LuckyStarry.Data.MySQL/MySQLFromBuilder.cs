@@ -12,8 +12,8 @@ namespace LuckyStarry.Data.MySQL
 
         IWhereBuilder ITableBuilder.Where(ICondition condition) => this.Where(condition);
         IWhereBuilderExtensible IFromBuilder.Where(ICondition condition) => this.Where(condition);
-
-        public new virtual MySQLWhereBuilderExtensible Where(ICondition condition) => new MySQLWhereBuilderExtensible(this, condition);
+        IOrderBuilder IOrderBuildable.OrderBy(Data.Objects.IDbColumn column) => this.OrderBy(column);
+        IOrderBuilder IOrderBuildable.OrderByDescending(Data.Objects.IDbColumn column) => this.OrderByDescending(column);
 
         protected internal override string CompilePart()
         {
@@ -35,5 +35,9 @@ namespace LuckyStarry.Data.MySQL
         }
 
         public override string Build() => this.Compile();
+
+        public new virtual MySQLWhereBuilderExtensible Where(ICondition condition) => new MySQLWhereBuilderExtensible(this, condition);
+        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this, column);
+        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this, column);
     }
 }

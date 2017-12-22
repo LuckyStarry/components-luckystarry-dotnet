@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LuckyStarry.Data" Version="1.0.5.2-alpha" />
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.5.4-alpha" />
   </ItemGroup>
 
 </Project>

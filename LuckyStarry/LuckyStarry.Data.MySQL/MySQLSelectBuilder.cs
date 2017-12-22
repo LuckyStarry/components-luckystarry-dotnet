@@ -20,7 +20,7 @@ namespace LuckyStarry.Data.MySQL
         {
             var column = this.Column(columns.First());
             var less = columns.Skip(1);
-            return less != null && less.Any() ? column : column.Columns(less);
+            return less != null && less.Any() ? column.Columns(less) : column;
         }
 
         protected internal override string CompilePart() => "SELECT";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -58,6 +59,22 @@ namespace LuckyStarry.Data.MySQL.Tests
                 .Column(factory.GetDbObjectFactory().CreateColumn(column_1))
                 .Column(factory.GetDbObjectFactory().CreateColumn(column_2))
                 .Column(factory.GetDbObjectFactory().CreateColumn(column_3))
+                .From(factory.GetDbObjectFactory().CreateTable(table));
+
+            Assert.Equal($"SELECT `{ column_1 }`, `{ column_2 }`, `{ column_3 }` FROM `{ table }`", builder.Build());
+        }
+
+        [Fact]
+        public void SelectColumnsTest()
+        {
+            var factory = new MySQLCommandFactory();
+            var table = Utils.RandomName();
+            var column_1 = Utils.RandomName();
+            var column_2 = Utils.RandomName();
+            var column_3 = Utils.RandomName();
+            var columns = new[] { column_1, column_2, column_3 };
+            var builder = factory.CreateSelectBuilder()
+                .Columns(columns.Select(column => factory.GetDbObjectFactory().CreateColumn(column)))
                 .From(factory.GetDbObjectFactory().CreateTable(table));
 
             Assert.Equal($"SELECT `{ column_1 }`, `{ column_2 }`, `{ column_3 }` FROM `{ table }`", builder.Build());
