@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="LuckyStarry.Data" Version="1.0.5.4-alpha" />
+    <PackageReference Include="MySql.Data" Version="6.10.5" />
   </ItemGroup>
 
 </Project>
