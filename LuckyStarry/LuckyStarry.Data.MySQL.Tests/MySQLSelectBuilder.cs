@@ -111,5 +111,23 @@ namespace LuckyStarry.Data.MySQL.Tests
 
             Assert.Equal($"SELECT `{ column_1 }`, `{ column_2 }` FROM `{ table }` AS `{ alias_1 }`", builder.Build());
         }
+
+        [Fact]
+        public void SelectColumnFromLimitTest()
+        {
+            var factory = new MySQLCommandFactory();
+            var table = Utils.RandomName();
+            var alias_1 = Utils.RandomName();
+            var column_1 = Utils.RandomName();
+            var column_2 = Utils.RandomName();
+            var count = new Random().Next(50, 200);
+            var builder = factory.CreateSelectBuilder()
+                .Column(factory.GetDbObjectFactory().CreateColumn(column_1))
+                .Column(factory.GetDbObjectFactory().CreateColumn(column_2))
+                .From(factory.GetDbObjectFactory().CreateTable(table, alias_1))
+                .Limit(count);
+
+            Assert.Equal($"SELECT `{ column_1 }`, `{ column_2 }` FROM `{ table }` AS `{ alias_1 }` LIMIT { count }", builder.Build());
+        }
     }
 }

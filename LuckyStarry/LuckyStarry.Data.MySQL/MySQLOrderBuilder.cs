@@ -9,7 +9,7 @@ namespace LuckyStarry.Data.MySQL
         private readonly Data.Objects.IDbColumn column;
         public abstract string OrderType { get; }
 
-        protected internal MySQLOrderBuilder(MySQLWhereBuilder where, Data.Objects.IDbColumn column) : base(where) => this.column = column;
+        protected internal MySQLOrderBuilder(MySQLWhereBuilderExtensible where, Data.Objects.IDbColumn column) : base(where) => this.column = column;
         protected internal MySQLOrderBuilder(MySQLOrderBuilder orderby, Data.Objects.IDbColumn column) : base(orderby) => this.column = column;
         protected internal MySQLOrderBuilder(MySQLFromBuilder orderby, Data.Objects.IDbColumn column) : base(orderby) => this.column = column;
 
@@ -25,6 +25,8 @@ namespace LuckyStarry.Data.MySQL
 
         public virtual MySQLOrderBuilder ThenBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this, column);
         public virtual MySQLOrderBuilder ThenByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this, column);
+        public virtual MySQLLimitBuilder Limit(int rows) => new MySQLLimitBuilder(this, rows);
+        public virtual MySQLLimitBuilder Limit(int offset, int rows) => new MySQLLimitBuilder(this, offset, rows);
 
         public virtual string Build() => this.Compile();
     }

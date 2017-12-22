@@ -18,7 +18,7 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal virtual string Compile()
         {
-            return $"{ this.Previous?.CompilePart() } { this.CompilePart() }";
+            return $"{ this.Previous?.Compile() } { this.CompilePart() }";
         }
     }
 }
