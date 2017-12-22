@@ -6,13 +6,14 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.5.3-alpha</Version>
+    <Version>1.0.5.4-alpha</Version>
     <PackageReleaseNotes>==========1.0.5==========
 [^] 增加DbObject的使用
 ==========1.0.4==========
 [^] 增加命令生成工具
 ==========1.0.2==========
 [^] 增加异步方法的支持</PackageReleaseNotes>
+    <PackageId>LuckyStarry.Data</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
