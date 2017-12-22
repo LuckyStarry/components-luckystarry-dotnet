@@ -9,8 +9,8 @@ namespace LuckyStarry.Services
     public interface IDbService<TEntity> : IService
         where TEntity : IEntity
     {
-        string[] Columns { get; }
-        string TableName { get; }
+        IEnumerable<Data.Objects.IDbColumn> Columns { get; }
+        Data.Objects.IDbTable Table { get; }
         IEnumerable<TEntity> GetAll();
 
         Task<IEnumerable<TEntity>> GetAllAsync();
@@ -19,7 +19,7 @@ namespace LuckyStarry.Services
     public interface IDbService<TEntity, TPrimary> : IDbService<TEntity>
         where TEntity : IEntity<TPrimary>
     {
-        string PrimaryKey { get; }
+        Data.Objects.IDbColumn PrimaryKey { get; }
         TEntity GetById(TPrimary id);
         TPrimary Insert(TEntity model);
         bool LogicalDelete(TPrimary id);

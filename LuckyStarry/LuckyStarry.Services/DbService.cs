@@ -14,15 +14,14 @@ namespace LuckyStarry.Services
         private readonly IDbClient client;
         public DbService(IDbClient client) => this.client = client;
 
-        public virtual string[] Columns { get; } = typeof(TEntity).GetProperties().Select(p => p.Name).ToArray();
-
-        public virtual string TableName { get; } = typeof(TEntity).Name;
+        public virtual IEnumerable<Data.Objects.IDbColumn> Columns => DbColumns.GetColumns<TEntity>(this.client.GetCommandFactory().GetDbObjectFactory());
+        public virtual Data.Objects.IDbTable Table => this.client.GetCommandFactory().GetDbObjectFactory().CreateTable(typeof(TEntity).Name);
 
         private string GetAllSqlText() => this.client
                 .GetCommandFactory()
                 .CreateSelectBuilder()
                 .Columns(this.Columns)
-                .From(this.TableName)
+                .From(this.Table)
                 .Build();
 
         public virtual IEnumerable<TEntity> GetAll() => this.client.Query<TEntity>(this.GetAllSqlText());
@@ -35,7 +34,7 @@ namespace LuckyStarry.Services
         private readonly IDbClient client;
         public DbService(IDbClient client) : base(client) => this.client = client;
 
-        public virtual string PrimaryKey { get; } = nameof(Models.IEntity<TPrimary>.ID);
+        public virtual Data.Objects.IDbColumn PrimaryKey => this.Columns.First(c => c.Name == nameof(Models.IEntity<TPrimary>.ID));
 
         private string GetByIdSqlText(string idKey)
         {
@@ -43,8 +42,8 @@ namespace LuckyStarry.Services
             return factory
                 .CreateSelectBuilder()
                 .Columns(this.Columns)
-                .From(this.TableName)
-                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, idKey))
+                .From(this.Table)
+                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, factory.GetDbObjectFactory().CreateParameter(idKey)))
                 .Build();
         }
 
@@ -54,11 +53,12 @@ namespace LuckyStarry.Services
         private string GetInsertSqlText()
         {
             var factory = this.client.GetCommandFactory();
+            var objects = factory.GetDbObjectFactory();
             return factory
                 .CreateInsertBuilder()
-                .Into(this.TableName)
+                .Into(this.Table)
                 .Columns(this.Columns)
-                .Values(this.Columns)
+                .Values(this.Columns.Select(c => objects.CreateParameter(c.Name)))
                 .Build();
         }
 
@@ -89,8 +89,8 @@ namespace LuckyStarry.Services
             var factory = this.client.GetCommandFactory();
             return factory
                 .CreateDeleteBuilder()
-                .From(this.TableName)
-                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, idKey))
+                .From(this.Table)
+                .Where(factory.GetConditionFactory().EqualTo(this.PrimaryKey, factory.GetDbObjectFactory().CreateParameter(idKey)))
                 .Build();
         }
 
@@ -110,7 +110,7 @@ namespace LuckyStarry.Services
         private (string, DynamicParameters) GetUpdateSqlText(object conditions, object entity)
         {
             var factory = this.client.GetCommandFactory();
-            var builder = factory.CreateUpdateBuilder().Table(this.TableName);
+            var builder = factory.CreateUpdateBuilder().Table(this.Table);
 
             const string PREFIX_CONDITION = "__where_";
             const string PREFIX_TARGET = "__set_";
@@ -118,21 +118,29 @@ namespace LuckyStarry.Services
             var parameters = new DynamicParameters();
             foreach (var property in entity.GetType().GetProperties().Where(p => p.CanRead))
             {
-                if (string.Equals(property.Name, this.PrimaryKey, StringComparison.CurrentCultureIgnoreCase))
+                if (string.Equals(property.Name, this.PrimaryKey.Name, StringComparison.CurrentCultureIgnoreCase))
                 {
                     continue;
                 }
-                var column = factory.GetDbObjectFactory().CreateColumn(property.Name);
+                var column = this.Columns.FirstOrDefault(c => string.Equals(c.Name, property.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (column == null)
+                {
+                    continue;
+                }
                 var parameter = factory.GetDbObjectFactory().CreateParameter($"{ PREFIX_CONDITION }{ property.Name }");
-                builder = builder.Set(column.Name, parameter.Name);
+                builder = builder.Set(column, parameter);
                 parameters.Add(parameter.SqlText, property.GetValue(conditions));
             }
             var where = default(IWhereBuilder);
             foreach (var property in conditions.GetType().GetProperties().Where(p => p.CanRead))
             {
-                var column = factory.GetDbObjectFactory().CreateColumn(property.Name);
+                var column = this.Columns.FirstOrDefault(c => string.Equals(c.Name, property.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (column == null)
+                {
+                    continue;
+                }
                 var parameter = factory.GetDbObjectFactory().CreateParameter($"{ PREFIX_TARGET }{ property.Name }");
-                var condition = factory.GetConditionFactory().EqualTo(column.Name, parameter.Name);
+                var condition = factory.GetConditionFactory().EqualTo(column, parameter);
                 where = where?.And(condition) ?? builder.Where(condition);
                 parameters.Add(parameter.SqlText, property.GetValue(entity));
             }
