@@ -19,6 +19,7 @@ namespace LuckyStarry.Data.MySQL
         protected MySQLIntoBuilder(MySQLIntoBuilder setted) : base(setted) { }
 
         protected internal override string CompilePart() => this.table.SqlText;
+        protected internal override string Compile() => $"{ this.Previous.Compile() } INTO { this.CompilePart() }";
 
         IIntoColumnsBuilder IIntoBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
         IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);

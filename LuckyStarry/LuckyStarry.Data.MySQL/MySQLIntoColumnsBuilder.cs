@@ -16,7 +16,7 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string Compile()
         {
-            return $"{ this.Previous.Compile() } { (this.Previous is MySQLIntoColumnsBuilder ? "," : "(") } { this.CompilePart() }";
+            return $"{ this.Previous.Compile() }{ (this.Previous is MySQLIntoColumnsBuilder ? "," : " (") } { this.CompilePart() }";
         }
 
         IIntoValuesBuilder IIntoColumnsBuilder.Value(Data.Objects.IDbParameter parameter) => this.Value(parameter);
@@ -27,16 +27,16 @@ namespace LuckyStarry.Data.MySQL
         public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this, column);
         public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
-            var c = this.Column(columns.First());
+            var column = this.Column(columns.First());
             var less = columns.Skip(1);
-            return less != null && less.Any() ? c : c.Columns(less);
+            return less != null && less.Any() ? column.Columns(less) : column;
         }
         public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this, parameter);
         public virtual MySQLIntoValuesBuilder Values(IEnumerable<Data.Objects.IDbParameter> parameters)
         {
             var values = this.Value(parameters.First());
             var less = parameters.Skip(1);
-            return less != null && less.Any() ? values : values.Values(less);
+            return less != null && less.Any() ? values.Values(less) : values;
         }
     }
 }

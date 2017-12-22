@@ -16,19 +16,19 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string Compile()
         {
-            return $"{ this.Previous.Compile() } { (this.Previous is MySQLIntoValuesBuilder ? "," : ") VALUES (") } { this.CompilePart() }";
+            return $"{ this.Previous.Compile() }{ (this.Previous is MySQLIntoValuesBuilder ? "," : " ) VALUES (") } { this.CompilePart() }";
         }
 
-        public virtual string Build() => $"{ this.Compile() })";
+        public virtual string Build() => $"{ this.Compile() } )";
 
         IIntoValuesBuilder IIntoValuesBuilder.Value(Data.Objects.IDbParameter parameters) => this.Value(parameter);
         IIntoValuesBuilder IIntoValuesBuilder.Values(IEnumerable<Data.Objects.IDbParameter> parameters) => this.Values(parameters);
-        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter paramter) => new MySQLIntoValuesBuilder(this, parameter);
+        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this, parameter);
         public virtual MySQLIntoValuesBuilder Values(IEnumerable<Data.Objects.IDbParameter> parameters)
         {
             var values = this.Value(parameters.First());
             var less = parameters.Skip(1);
-            return less != null && less.Any() ? values : values.Values(less);
+            return less != null && less.Any() ? values.Values(less) : values;
         }
     }
 }
