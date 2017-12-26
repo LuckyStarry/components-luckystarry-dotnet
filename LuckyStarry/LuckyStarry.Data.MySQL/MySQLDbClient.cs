@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LuckyStarry.Data.MySQL
 {
-    public class MySQLDbClient : DbClient
+    public class MySQLDbClient : DbClient, IMySQLDbClient
     {
         private readonly string connectionString;
 
