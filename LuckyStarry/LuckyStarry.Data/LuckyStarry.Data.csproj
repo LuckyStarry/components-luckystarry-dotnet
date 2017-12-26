@@ -6,7 +6,7 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系基础数据库组件</Description>
-    <Version>1.0.5.4-alpha</Version>
+    <Version>1.0.5.5</Version>
     <PackageReleaseNotes>==========1.0.5==========
 [^] 增加DbObject的使用
 ==========1.0.4==========

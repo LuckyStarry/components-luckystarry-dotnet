@@ -30,17 +30,40 @@ namespace LuckyStarry.Data
         public abstract IDbConnection CreateConnection();
         public virtual async Task<IDbConnection> CreateConnectionAsync() => await Task.FromResult(this.CreateConnection());
 
-        public virtual IEnumerable<T> Query<T>(string sqlText, object param = null) => this.Execute(connection => connection.Query<T>(sqlText, param));
-        public virtual T QueryFirst<T>(string sqlText, object param = null) => this.Execute(connection => connection.QueryFirst<T>(sqlText, param));
-        public virtual T QueryFirstOrDefault<T>(string sqlText, object param = null) => this.Execute(connection => connection.QueryFirstOrDefault<T>(sqlText, param));
-        public virtual T ExecuteScalar<T>(string sqlText, object param = null) => this.Execute(connection => connection.ExecuteScalar<T>(sqlText, param));
-        public virtual int ExecuteNonQuery(string sqlText, object param = null) => this.Execute(connection => connection.Execute(sqlText, param));
+        private T Execute<T>(Func<IDbConnection, string, object, T> func, string sqlText, object parameter)
+        {
+            try
+            {
+                return this.Execute(connection => func(connection, sqlText, parameter));
+            }
+            catch (Exception exception)
+            {
+                throw new SqlExecutionException(sqlText, exception);
+            }
+        }
+        private async Task<T> ExecuteAsync<T>(Func<IDbConnection, string, object, Task<T>> func, string sqlText, object parameter)
+        {
+            try
+            {
+                return await this.ExecuteAsync(connection => func(connection, sqlText, parameter));
+            }
+            catch (Exception exception)
+            {
+                throw new SqlExecutionException(sqlText, exception);
+            }
+        }
 
-        public virtual async Task<IEnumerable<T>> QueryAsync<T>(string sqlText, object param = null) => await this.ExecuteAsync(connection => connection.QueryAsync<T>(sqlText, param));
-        public virtual async Task<T> QueryFirstAsync<T>(string sqlText, object param = null) => await this.ExecuteAsync(connection => connection.QueryFirstAsync<T>(sqlText, param));
-        public virtual async Task<T> QueryFirstOrDefaultAsync<T>(string sqlText, object param = null) => await this.ExecuteAsync(connection => connection.QueryFirstOrDefaultAsync<T>(sqlText, param));
-        public virtual async Task<int> ExecuteNonQueryAsync(string sqlText, object param = null) => await this.ExecuteAsync(connection => connection.ExecuteAsync(sqlText, param));
-        public virtual async Task<T> ExecuteScalarAsync<T>(string sqlText, object param = null) => await this.ExecuteAsync(connection => connection.ExecuteScalarAsync<T>(sqlText, param));
+        public virtual IEnumerable<T> Query<T>(string sqlText, object parameter = null) => this.Execute((connection, sql, param) => connection.Query<T>(sql, param), sqlText, parameter);
+        public virtual T QueryFirst<T>(string sqlText, object parameter = null) => this.Execute((connection, sql, param) => connection.QueryFirst<T>(sql, param), sqlText, parameter);
+        public virtual T QueryFirstOrDefault<T>(string sqlText, object parameter = null) => this.Execute((connection, sql, param) => connection.QueryFirstOrDefault<T>(sql, param), sqlText, parameter);
+        public virtual T ExecuteScalar<T>(string sqlText, object parameter = null) => this.Execute((connection, sql, param) => connection.ExecuteScalar<T>(sql, param), sqlText, parameter);
+        public virtual int ExecuteNonQuery(string sqlText, object parameter = null) => this.Execute((connection, sql, param) => connection.Execute(sql, param), sqlText, parameter);
+
+        public virtual async Task<IEnumerable<T>> QueryAsync<T>(string sqlText, object parameter = null) => await this.ExecuteAsync((connection, sql, param) => connection.QueryAsync<T>(sql, param), sqlText, parameter);
+        public virtual async Task<T> QueryFirstAsync<T>(string sqlText, object parameter = null) => await this.ExecuteAsync((connection, sql, param) => connection.QueryFirstAsync<T>(sql, param), sqlText, parameter);
+        public virtual async Task<T> QueryFirstOrDefaultAsync<T>(string sqlText, object parameter = null) => await this.ExecuteAsync((connection, sql, param) => connection.QueryFirstOrDefaultAsync<T>(sql, param), sqlText, parameter);
+        public virtual async Task<int> ExecuteNonQueryAsync(string sqlText, object parameter = null) => await this.ExecuteAsync((connection, sql, param) => connection.ExecuteAsync(sql, param), sqlText, parameter);
+        public virtual async Task<T> ExecuteScalarAsync<T>(string sqlText, object parameter = null) => await this.ExecuteAsync((connection, sql, param) => connection.ExecuteScalarAsync<T>(sql, param), sqlText, parameter);
 
         public virtual T Transaction<T>(Func<IDbConnection, IDbTransaction, T> func)
         {
