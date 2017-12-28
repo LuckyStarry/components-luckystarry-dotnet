@@ -6,6 +6,7 @@
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系应用日志基础定义。</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
 </Project>
