@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
+    <Description>LuckyStarry 程序体系应用日志基础定义。</Description>
+  </PropertyGroup>
+
+</Project>
