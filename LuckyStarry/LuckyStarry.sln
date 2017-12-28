@@ -13,9 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuckyStarry.Data.MySQL", "L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuckyStarry.Data.MySQL.Tests", "LuckyStarry.Data.MySQL.Tests\LuckyStarry.Data.MySQL.Tests.csproj", "{3842C436-7B65-42A7-BB1E-6930E0912272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyStarry.Utils", "LuckyStarry.Utils\LuckyStarry.Utils.csproj", "{E04787BA-3FFE-4D73-ABAA-DFFF8B521BDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuckyStarry.Utils", "LuckyStarry.Utils\LuckyStarry.Utils.csproj", "{E04787BA-3FFE-4D73-ABAA-DFFF8B521BDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyStarry.Utils.Tests", "LuckyStarry.Utils.Tests\LuckyStarry.Utils.Tests.csproj", "{95D976F5-B379-4027-AE66-0890BF1DB3BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuckyStarry.Utils.Tests", "LuckyStarry.Utils.Tests\LuckyStarry.Utils.Tests.csproj", "{95D976F5-B379-4027-AE66-0890BF1DB3BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyStarry.App.Utils", "LuckyStarry.App.Utils\LuckyStarry.App.Utils.csproj", "{2C9F84C2-8BC6-4087-9651-54E0F5CCA63F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyStarry.App.Utils.Logger", "LuckyStarry.App.Utils.Logger\LuckyStarry.App.Utils.Logger.csproj", "{648A2E3E-2C2B-459B-B8AD-D9DD2C6D9FBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuckyStarry.App.Utils.Logger.Aliyun", "LuckyStarry.App.Utils.Logger.Aliyun\LuckyStarry.App.Utils.Logger.Aliyun.csproj", "{440357B2-9129-476F-B353-36B624666B36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +57,18 @@ Global
 		{95D976F5-B379-4027-AE66-0890BF1DB3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95D976F5-B379-4027-AE66-0890BF1DB3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95D976F5-B379-4027-AE66-0890BF1DB3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C9F84C2-8BC6-4087-9651-54E0F5CCA63F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C9F84C2-8BC6-4087-9651-54E0F5CCA63F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C9F84C2-8BC6-4087-9651-54E0F5CCA63F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C9F84C2-8BC6-4087-9651-54E0F5CCA63F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{648A2E3E-2C2B-459B-B8AD-D9DD2C6D9FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{648A2E3E-2C2B-459B-B8AD-D9DD2C6D9FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{648A2E3E-2C2B-459B-B8AD-D9DD2C6D9FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{648A2E3E-2C2B-459B-B8AD-D9DD2C6D9FBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440357B2-9129-476F-B353-36B624666B36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440357B2-9129-476F-B353-36B624666B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440357B2-9129-476F-B353-36B624666B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440357B2-9129-476F-B353-36B624666B36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
