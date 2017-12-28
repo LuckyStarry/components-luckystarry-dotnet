@@ -5,6 +5,7 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系应用日志基础定义。</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
