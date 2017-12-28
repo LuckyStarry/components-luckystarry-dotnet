@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
+    <Description>LuckyStarry 程序体系Mvc应用基础体系。</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LuckyStarry.Models" Version="1.0.2" />
+    <PackageReference Include="LuckyStarry.Services" Version="1.0.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+  </ItemGroup>
+
+</Project>
