@@ -6,5 +6,6 @@ namespace LuckyStarry.Utils.ID
 {
     public interface IIdentifierUtils
     {
+        Identifier New();
     }
 }

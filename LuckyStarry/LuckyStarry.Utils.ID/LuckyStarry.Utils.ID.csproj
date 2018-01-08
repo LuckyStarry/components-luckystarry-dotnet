@@ -5,6 +5,8 @@
     <Authors>SUN BO</Authors>
     <Company>SUN BO</Company>
     <Description>LuckyStarry 程序体系ID工具</Description>
+    <Version>1.0.1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
