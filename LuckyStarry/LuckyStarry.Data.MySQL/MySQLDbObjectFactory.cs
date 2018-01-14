@@ -7,6 +7,8 @@ namespace LuckyStarry.Data.MySQL
 {
     public class MySQLDbObjectFactory : IDbObjectFactory
     {
+        protected internal MySQLDbObjectFactory() { }
+
         IDbColumn IDbObjectFactory.CreateColumn(string name) => this.CreateColumn(name);
         IDbParameter IDbObjectFactory.CreateParameter(string name) => this.CreateParameter(name);
         IDbTable IDbObjectFactory.CreateTable(string name) => this.CreateTable(name);

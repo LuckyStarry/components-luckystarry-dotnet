@@ -8,8 +8,8 @@ namespace LuckyStarry.Data.MySQL
     {
         private ICondition condition;
 
-        protected internal MySQLWhereBuilder(MySQLTableBuilder table, ICondition condition) : base(table) => this.condition = condition;
-        protected internal MySQLWhereBuilder(MySQLWhereBuilder where, ICondition condition) : base(where) => this.condition = condition;
+        protected internal MySQLWhereBuilder(MySQLCommandFactory factory, MySQLTableBuilder table, ICondition condition) : base(factory, table) => this.condition = condition;
+        protected internal MySQLWhereBuilder(MySQLCommandFactory factory, MySQLWhereBuilder where, ICondition condition) : base(factory, where) => this.condition = condition;
 
         public string Build() => this.Compile();
 
@@ -20,7 +20,7 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string Compile() => $"{ this.Previous.Compile() } WHERE { this.CompilePart() }";
 
-        public virtual MySQLWhereAndBuilder And(ICondition condition) => new MySQLWhereAndBuilder(this, condition);
-        public virtual MySQLWhereOrBuilder Or(ICondition condition) => new MySQLWhereOrBuilder(this, condition);
+        public virtual MySQLWhereAndBuilder And(ICondition condition) => new MySQLWhereAndBuilder(this.factory, this, condition);
+        public virtual MySQLWhereOrBuilder Or(ICondition condition) => new MySQLWhereOrBuilder(this.factory, this, condition);
     }
 }

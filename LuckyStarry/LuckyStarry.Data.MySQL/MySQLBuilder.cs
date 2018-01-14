@@ -6,9 +6,11 @@ namespace LuckyStarry.Data.MySQL
 {
     public abstract class MySQLBuilder
     {
-        public MySQLBuilder() : this(null) { }
-        public MySQLBuilder(MySQLBuilder previous)
+        protected readonly MySQLCommandFactory factory;
+        public MySQLBuilder(MySQLCommandFactory factory) : this(factory, null) { }
+        public MySQLBuilder(MySQLCommandFactory factory, MySQLBuilder previous)
         {
+            this.factory = factory;
             this.Previous = previous;
         }
 

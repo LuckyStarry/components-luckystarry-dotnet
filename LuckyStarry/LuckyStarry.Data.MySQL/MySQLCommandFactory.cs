@@ -13,11 +13,11 @@ namespace LuckyStarry.Data.MySQL
         IConditionFactory ICommandFactory.GetConditionFactory() => this.GetConditionFactory();
         IDbObjectFactory ICommandFactory.GetDbObjectFactory() => this.GetDbObjectFactory();
 
-        public virtual MySQLSelectBuilder CreateSelectBuilder() => new MySQLSelectBuilder();
-        public virtual MySQLInsertBuilder CreateInsertBuilder() => new MySQLInsertBuilder();
-        public virtual MySQLUpdateBuilder CreateUpdateBuilder() => new MySQLUpdateBuilder();
-        public virtual MySQLDeleteBuilder CreateDeleteBuilder() => new MySQLDeleteBuilder();
-        public virtual MySQLConditionFactory GetConditionFactory() => new MySQLConditionFactory();
+        public virtual MySQLSelectBuilder CreateSelectBuilder() => new MySQLSelectBuilder(this);
+        public virtual MySQLInsertBuilder CreateInsertBuilder() => new MySQLInsertBuilder(this);
+        public virtual MySQLUpdateBuilder CreateUpdateBuilder() => new MySQLUpdateBuilder(this);
+        public virtual MySQLDeleteBuilder CreateDeleteBuilder() => new MySQLDeleteBuilder(this);
+        public virtual MySQLConditionFactory GetConditionFactory() => new MySQLConditionFactory(this);
         public virtual MySQLDbObjectFactory GetDbObjectFactory() => new MySQLDbObjectFactory();
     }
 }

@@ -8,7 +8,7 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly Data.Objects.IDbColumn column;
 
-        protected internal MySQLSelectBuilderColumnsSelected(MySQLSelectBuilder select, Data.Objects.IDbColumn column) : base(select) => this.column = column;
+        protected internal MySQLSelectBuilderColumnsSelected(MySQLCommandFactory factory, MySQLSelectBuilder select, Data.Objects.IDbColumn column) : base(factory, select) => this.column = column;
 
         protected internal override string CompilePart() => string.IsNullOrWhiteSpace(this.column.Alias) ? this.column.SqlText : $"{ this.column.SqlText } AS { this.column.SqlTextAlias }";
 

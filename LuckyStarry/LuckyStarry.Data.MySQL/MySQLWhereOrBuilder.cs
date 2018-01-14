@@ -8,7 +8,7 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly ICondition condition;
 
-        protected internal MySQLWhereOrBuilder(MySQLWhereBuilder where, ICondition condition) : base(where, condition) => this.condition = condition;
+        protected internal MySQLWhereOrBuilder(MySQLCommandFactory factory, MySQLWhereBuilder where, ICondition condition) : base(factory, where, condition) => this.condition = condition;
 
         protected internal override string Compile() => $"{ this.Previous.Compile() } OR { this.CompilePart() }";
     }

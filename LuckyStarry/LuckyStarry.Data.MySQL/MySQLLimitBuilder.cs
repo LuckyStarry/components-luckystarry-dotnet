@@ -9,23 +9,23 @@ namespace LuckyStarry.Data.MySQL
         private readonly int offset;
         private readonly int rows;
 
-        protected internal MySQLLimitBuilder(MySQLFromBuilder from, int rows) : this(from, 0, rows) { }
-        protected internal MySQLLimitBuilder(MySQLWhereBuilderExtensible where, int rows) : this(where, 0, rows) { }
-        protected internal MySQLLimitBuilder(MySQLOrderBuilder order, int rows) : this(order, 0, rows) { }
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLFromBuilder from, int rows) : this(factory, from, 0, rows) { }
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLWhereBuilderExtensible where, int rows) : this(factory, where, 0, rows) { }
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLOrderBuilder order, int rows) : this(factory, order, 0, rows) { }
 
-        protected internal MySQLLimitBuilder(MySQLFromBuilder from, int offset, int rows) : base(from)
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLFromBuilder from, int offset, int rows) : base(factory, from)
         {
             this.offset = offset;
             this.rows = rows;
         }
 
-        protected internal MySQLLimitBuilder(MySQLWhereBuilderExtensible where, int offset, int rows) : base(where)
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLWhereBuilderExtensible where, int offset, int rows) : base(factory, where)
         {
             this.offset = offset;
             this.rows = rows;
         }
 
-        protected internal MySQLLimitBuilder(MySQLOrderBuilder order, int offset, int rows) : base(order)
+        protected internal MySQLLimitBuilder(MySQLCommandFactory factory, MySQLOrderBuilder order, int offset, int rows) : base(factory, order)
         {
             this.offset = offset;
             this.rows = rows;

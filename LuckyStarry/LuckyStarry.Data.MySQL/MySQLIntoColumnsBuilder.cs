@@ -9,8 +9,8 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly Data.Objects.IDbColumn column;
 
-        protected internal MySQLIntoColumnsBuilder(MySQLIntoBuilder table, Data.Objects.IDbColumn column) : base(table) => this.column = column;
-        protected internal MySQLIntoColumnsBuilder(MySQLIntoColumnsBuilder previous, Data.Objects.IDbColumn column) : base(previous) => this.column = column;
+        protected internal MySQLIntoColumnsBuilder(MySQLCommandFactory factory, MySQLIntoBuilder table, Data.Objects.IDbColumn column) : base(factory, table) => this.column = column;
+        protected internal MySQLIntoColumnsBuilder(MySQLCommandFactory factory, MySQLIntoColumnsBuilder previous, Data.Objects.IDbColumn column) : base(factory, previous) => this.column = column;
 
         protected internal override string CompilePart() => this.column.SqlText;
 
@@ -24,14 +24,14 @@ namespace LuckyStarry.Data.MySQL
         IIntoColumnsBuilder IIntoBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
         IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this, column);
+        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this.factory, this, column);
         public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
             var column = this.Column(columns.First());
             var less = columns.Skip(1);
             return less != null && less.Any() ? column.Columns(less) : column;
         }
-        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this, parameter);
+        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this.factory, this, parameter);
         public virtual MySQLIntoValuesBuilder Values(IEnumerable<Data.Objects.IDbParameter> parameters)
         {
             var values = this.Value(parameters.First());

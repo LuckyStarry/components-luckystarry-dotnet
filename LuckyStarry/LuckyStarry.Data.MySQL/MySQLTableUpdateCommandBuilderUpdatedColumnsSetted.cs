@@ -9,7 +9,7 @@ namespace LuckyStarry.Data.MySQL
         private readonly Data.Objects.IDbColumn column;
         private readonly Data.Objects.IDbParameter parameter;
 
-        protected internal MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(MySQLTableUpdateCommandBuilder table, Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) : base(table)
+        protected internal MySQLTableUpdateCommandBuilderUpdatedColumnsSetted(MySQLCommandFactory factory, MySQLTableUpdateCommandBuilder table, Data.Objects.IDbColumn column, Data.Objects.IDbParameter parameter) : base(factory, table)
         {
             this.column = column;
             this.parameter = parameter;

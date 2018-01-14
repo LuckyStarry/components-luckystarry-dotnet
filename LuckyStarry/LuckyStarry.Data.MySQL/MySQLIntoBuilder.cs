@@ -10,13 +10,13 @@ namespace LuckyStarry.Data.MySQL
         private readonly MySQLInsertBuilder insert;
         private readonly Data.Objects.IDbTable table;
 
-        protected internal MySQLIntoBuilder(MySQLInsertBuilder insert, Data.Objects.IDbTable table) : base(insert)
+        protected internal MySQLIntoBuilder(MySQLCommandFactory factory, MySQLInsertBuilder insert, Data.Objects.IDbTable table) : base(factory, insert)
         {
             this.insert = insert;
             this.table = table;
         }
 
-        protected MySQLIntoBuilder(MySQLIntoBuilder setted) : base(setted) { }
+        protected MySQLIntoBuilder(MySQLCommandFactory factory, MySQLIntoBuilder setted) : base(factory, setted) { }
 
         protected internal override string CompilePart() => this.table.SqlText;
         protected internal override string Compile() => $"{ this.Previous.Compile() } INTO { this.CompilePart() }";
@@ -24,7 +24,7 @@ namespace LuckyStarry.Data.MySQL
         IIntoColumnsBuilder IIntoBuilder.Column(Data.Objects.IDbColumn column) => this.Column(column);
         IIntoColumnsBuilder IIntoBuilder.Columns(IEnumerable<Data.Objects.IDbColumn> columns) => this.Columns(columns);
 
-        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this, column);
+        public virtual MySQLIntoColumnsBuilder Column(Data.Objects.IDbColumn column) => new MySQLIntoColumnsBuilder(this.factory, this, column);
         public virtual MySQLIntoColumnsBuilder Columns(IEnumerable<Data.Objects.IDbColumn> columns)
         {
             var setted = this.Column(columns.First());

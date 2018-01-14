@@ -7,8 +7,8 @@ namespace LuckyStarry.Data.MySQL
     public class MySQLWhereBuilderExtensible : MySQLBuilder, IWhereBuilderExtensible
     {
         private ICondition condition;
-        protected internal MySQLWhereBuilderExtensible(MySQLFromBuilder from, ICondition condition) : base(from) => this.condition = condition;
-        protected internal MySQLWhereBuilderExtensible(MySQLWhereBuilderExtensible where, ICondition condition) : base(where) => this.condition = condition;
+        protected internal MySQLWhereBuilderExtensible(MySQLCommandFactory factory, MySQLFromBuilder from, ICondition condition) : base(factory, from) => this.condition = condition;
+        protected internal MySQLWhereBuilderExtensible(MySQLCommandFactory factory, MySQLWhereBuilderExtensible where, ICondition condition) : base(factory, where) => this.condition = condition;
 
         public string Build() => this.Compile();
 
@@ -21,11 +21,11 @@ namespace LuckyStarry.Data.MySQL
 
         protected internal override string Compile() => $"{ this.Previous.Compile() } WHERE { this.CompilePart() }";
 
-        public virtual MySQLWhereAndBuilderExtensible And(ICondition condition) => new MySQLWhereAndBuilderExtensible(this, condition);
-        public virtual MySQLWhereOrBuilderExtensible Or(ICondition condition) => new MySQLWhereOrBuilderExtensible(this, condition);
-        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this, column);
-        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this, column);
-        public virtual MySQLLimitBuilder Limit(int rows) => new MySQLLimitBuilder(this, rows);
-        public virtual MySQLLimitBuilder Limit(int offset, int rows) => new MySQLLimitBuilder(this, offset, rows);
+        public virtual MySQLWhereAndBuilderExtensible And(ICondition condition) => new MySQLWhereAndBuilderExtensible(this.factory, this, condition);
+        public virtual MySQLWhereOrBuilderExtensible Or(ICondition condition) => new MySQLWhereOrBuilderExtensible(this.factory, this, condition);
+        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this.factory, this, column);
+        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this.factory, this, column);
+        public virtual MySQLLimitBuilder Limit(int rows) => new MySQLLimitBuilder(this.factory, this, rows);
+        public virtual MySQLLimitBuilder Limit(int offset, int rows) => new MySQLLimitBuilder(this.factory, this, offset, rows);
     }
 }

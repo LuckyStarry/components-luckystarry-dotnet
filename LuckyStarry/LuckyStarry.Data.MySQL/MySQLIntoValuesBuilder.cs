@@ -9,8 +9,8 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly Data.Objects.IDbParameter parameter;
 
-        protected internal MySQLIntoValuesBuilder(MySQLIntoColumnsBuilder table, Data.Objects.IDbParameter parameter) : base(table) => this.parameter = parameter;
-        protected internal MySQLIntoValuesBuilder(MySQLIntoValuesBuilder previous, Data.Objects.IDbParameter parameter) : base(previous) => this.parameter = parameter;
+        protected internal MySQLIntoValuesBuilder(MySQLCommandFactory factory, MySQLIntoColumnsBuilder table, Data.Objects.IDbParameter parameter) : base(factory, table) => this.parameter = parameter;
+        protected internal MySQLIntoValuesBuilder(MySQLCommandFactory factory, MySQLIntoValuesBuilder previous, Data.Objects.IDbParameter parameter) : base(factory, previous) => this.parameter = parameter;
 
         protected internal override string CompilePart() => this.parameter.SqlText;
 
@@ -23,7 +23,7 @@ namespace LuckyStarry.Data.MySQL
 
         IIntoValuesBuilder IIntoValuesBuilder.Value(Data.Objects.IDbParameter parameters) => this.Value(parameter);
         IIntoValuesBuilder IIntoValuesBuilder.Values(IEnumerable<Data.Objects.IDbParameter> parameters) => this.Values(parameters);
-        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this, parameter);
+        public virtual MySQLIntoValuesBuilder Value(Data.Objects.IDbParameter parameter) => new MySQLIntoValuesBuilder(this.factory, this, parameter);
         public virtual MySQLIntoValuesBuilder Values(IEnumerable<Data.Objects.IDbParameter> parameters)
         {
             var values = this.Value(parameters.First());

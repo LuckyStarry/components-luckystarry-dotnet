@@ -8,7 +8,7 @@ namespace LuckyStarry.Data.MySQL
     {
         private readonly Data.Objects.IDbTable table;
 
-        protected internal MySQLFromBuilder(MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(select, table) => this.table = table;
+        protected internal MySQLFromBuilder(MySQLCommandFactory factory, MySQLSelectBuilder select, Data.Objects.IDbTable table) : base(factory, select, table) => this.table = table;
 
         IWhereBuilder ITableBuilder.Where(ICondition condition) => this.Where(condition);
         IWhereBuilderExtensible IFromBuilder.Where(ICondition condition) => this.Where(condition);
@@ -36,10 +36,16 @@ namespace LuckyStarry.Data.MySQL
 
         public override string Build() => this.Compile();
 
-        public new virtual MySQLWhereBuilderExtensible Where(ICondition condition) => new MySQLWhereBuilderExtensible(this, condition);
-        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this, column);
-        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this, column);
-        public virtual MySQLLimitBuilder Limit(int rows) => new MySQLLimitBuilder(this, rows);
-        public virtual MySQLLimitBuilder Limit(int offset, int rows) => new MySQLLimitBuilder(this, offset, rows);
+        public new virtual MySQLWhereBuilderExtensible Where(ICondition condition) => new MySQLWhereBuilderExtensible(this.factory, this, condition);
+        public virtual MySQLOrderBuilder OrderBy(Data.Objects.IDbColumn column) => new MySQLOrderASCBuilder(this.factory, this, column);
+        public virtual MySQLOrderBuilder OrderByDescending(Data.Objects.IDbColumn column) => new MySQLOrderDESCBuilder(this.factory, this, column);
+        public virtual MySQLLimitBuilder Limit(int rows) => new MySQLLimitBuilder(this.factory, this, rows);
+        public virtual MySQLLimitBuilder Limit(int offset, int rows) => new MySQLLimitBuilder(this.factory, this, offset, rows);
+
+        public virtual MySQLWhereBuilderExtensible Where(Func<MySQLConditionFactory, MySQLCondition> func)
+        {
+            var condition = func(this.factory.GetConditionFactory());
+            return this.Where(condition);
+        }
     }
 }
