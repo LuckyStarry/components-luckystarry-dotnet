@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
+    <Description>LuckyStarry 程序体系基础服务</Description>
+    <Version>1.0.1.4</Version>
+    <PackageReleaseNotes>==========1.0.1==========
+[^] 增加异步方法的支持</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LuckyStarry.Data" Version="1.0.5.5" />
+    <PackageReference Include="LuckyStarry.Models" Version="1.0.2" />
+  </ItemGroup>
+
+</Project>

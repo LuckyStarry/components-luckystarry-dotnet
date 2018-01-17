@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
+    <Description>LuckyStarry 程序体系雪花ID</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LuckyStarry.Utils.ID" Version="1.0.1" />
+  </ItemGroup>
+
+</Project>

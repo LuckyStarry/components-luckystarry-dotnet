@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>SUN BO</Authors>
+    <Company>SUN BO</Company>
+    <Description>LuckyStarry 程序体系基础数据库组件</Description>
+    <Version>1.0.5.5</Version>
+    <PackageReleaseNotes>==========1.0.5==========
+[^] 增加DbObject的使用
+==========1.0.4==========
+[^] 增加命令生成工具
+==========1.0.2==========
+[^] 增加异步方法的支持</PackageReleaseNotes>
+    <PackageId>LuckyStarry.Data</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ICommandBuilder.cs" />
+    <Compile Remove="ISqlConditionBuilder.cs" />
+    <Compile Remove="ISqlTextBuilder.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.4" />
+  </ItemGroup>
+
+</Project>
