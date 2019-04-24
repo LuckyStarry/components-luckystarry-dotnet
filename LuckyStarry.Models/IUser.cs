@@ -6,7 +6,8 @@ namespace LuckyStarry.Models
 {
     public interface IUser
     {
-        long ID { get; }
-        string Name { get; }
+        string UserID { get; }
+        string UserName { get; }
+        string[] Roles { get; }
     }
 }

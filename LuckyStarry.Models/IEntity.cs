@@ -7,9 +7,11 @@ namespace LuckyStarry.Models
     public interface IEntity
     {
         long CreateTime { set; get; }
-        long CreateUser { set; get; }
+        string CreateUser { set; get; }
+        string CreateUserName { set; get; }
         long LastUpdateTime { set; get; }
-        long LastUpdateUser { set; get; }
+        string LastUpdateUser { set; get; }
+        string LastUpdateUserName { set; get; }
         bool LogicalDelete { set; get; }
     }
 
